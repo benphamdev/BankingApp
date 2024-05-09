@@ -16,8 +16,8 @@ jwt:
   expiration: 86400000
 
 #send sms
-twilio:
-  AccountSID: "ACd9870b3b2857941ce8ba68f2852e3f3b"
-  AuthToken: "a009cc8d34019a35551c432fa82dede5"
-  phoneNumber: "+84833998180"
+#twilio:
+#  AccountSID: "ACd9870b3b2857941ce8ba68f2852e3f3b"
+#  AuthToken: "a009cc8d34019a35551c432fa82dede5"
+#  phoneNumber: "+84833998180"
 
