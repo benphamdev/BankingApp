@@ -1,0 +1,37 @@
+spring:
+  datasource:
+    username: root
+    password: 123456789
+    url: jdbc:mysql://localhost:3307/bankingapp
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: phamchien152003@gmail.com
+    password: rqrlsfvijilgwxyq
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  security:
+    oauth2:
+      client:
+        registration:
+          #          google:
+          #            client-id: <client-id>
+          #            client-secret: <secret>
+          github:
+            client-id: Iv23liOqqtE8AHc7v9T6
+            client-secret: 23b38c7602df71a0da677f702dcaf3888cb11026
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
