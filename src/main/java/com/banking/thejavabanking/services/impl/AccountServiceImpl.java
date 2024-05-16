@@ -10,6 +10,7 @@ import com.banking.thejavabanking.models.Enums;
 import com.banking.thejavabanking.models.entity.Account;
 import com.banking.thejavabanking.models.entity.BranchInfo;
 import com.banking.thejavabanking.models.entity.User;
+import com.banking.thejavabanking.models.entity.UserTransaction;
 import com.banking.thejavabanking.repositories.AccountRepository;
 import com.banking.thejavabanking.repositories.BranchInfoRepository;
 import com.banking.thejavabanking.repositories.UserRepository;
@@ -20,12 +21,16 @@ import com.banking.thejavabanking.utils.AccountUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import static com.banking.thejavabanking.utils.AccountUtils.convertTime;
 
 @Service
 @RequiredArgsConstructor
@@ -41,10 +46,15 @@ public class AccountServiceImpl implements IAccountService {
     ITransactionService iTransactionService;
     IUserService userService;
     AccountMapper accountMapper;
-    //    IEmailService emailService;
+    FirebaseMessagingServiceImpl firebaseMessagingService;
+
+    @NonFinal
+    String image = "https://th.bing.com/th/id/OIP.GPgOs_sd9nF8fsKDOJe9dQHaEo?rs=1&pid=ImgDetMain";
+    @NonFinal
+    String title = "Biến động số dư";
 
     @Override
-    public AccountInfoResponse createAccount(AccountCreationRequest accountRequest) {
+    public Integer createAccount(AccountCreationRequest accountRequest) {
         User user = userRepository.findUserById(accountRequest.getUserId())
                                   .orElseThrow(() -> new AppException(ErrorResponse.USER_NOT_FOUND));
 
@@ -67,11 +77,7 @@ public class AccountServiceImpl implements IAccountService {
 
         accountRepository.save(account);
 
-        return AccountInfoResponse.builder()
-                                  .accountNumber(account.getAccountNumber())
-                                  .accountBalance(account.getBalance())
-                                  .accountName(user.getFirstName())
-                                  .build();
+        return account.getId();
     }
 
     @Override
@@ -98,10 +104,21 @@ public class AccountServiceImpl implements IAccountService {
     }
 
     @Override
+    public AccountInfoResponse getAccountInforByUserId(Integer userId) {
+        User user = userRepository.findUserById(userId)
+                                  .orElseThrow(() -> new AppException(ErrorResponse.USER_NOT_FOUND));
+
+        Account account = user.getAccount();
+        return accountMapper.toAccountInfoResponse(account);
+    }
+
+    @Override
     public Optional<Account> getAccountByUserId(Integer userId) {
         User user = userRepository.findUserById(userId)
                                   .orElseThrow(() -> new AppException(ErrorResponse.USER_NOT_FOUND));
-        return Optional.ofNullable(user.getAccount());
+
+        Account account = user.getAccount();
+        return Optional.ofNullable(account);
     }
 
     @Override
@@ -110,12 +127,9 @@ public class AccountServiceImpl implements IAccountService {
 
         UserResponse user = userService.getUserReponeseByID(account.getUser().getId());
 
-        return
-                AccountInfoResponse.builder()
-                                   .accountNumber(account.getAccountNumber())
-                                   .accountBalance(account.getBalance())
-                                   .accountName(user.getFirstName())
-                                   .build();
+        log.info("Account name: {}", account.getUser().getId());
+
+        return accountMapper.toAccountInfoResponse(account);
     }
 
     @Override
@@ -131,7 +145,7 @@ public class AccountServiceImpl implements IAccountService {
     public AccountInfoResponse creditAccount(CreditDebitRequest enquiryRequest) {
         Account account = getAccountByAccountNumber(enquiryRequest.getAccountNumber());
 
-        UserResponse user = userService.getUserReponeseByID(account.getUser().getId());
+//        UserResponse user = userService.getUserReponeseByID(account.getUser().getId());
 
         BigDecimal amount = enquiryRequest.getAmount();
 
@@ -139,56 +153,64 @@ public class AccountServiceImpl implements IAccountService {
                                   .add(amount));
 
         TransactionDto transactionDto = TransactionDto.builder()
-                                                      .transactionType(Enums.TransactionType.DEPOSIT.toString())
                                                       .amount(amount)
                                                       .fromAccount(account.getAccountNumber())
                                                       .toAccount("SELF")
-                                                      .status("SUCCESS")
+                                                      .description("Deposit money")
                                                       .build();
 
-        iTransactionService.saveTransaction(transactionDto);
+        UserTransaction userTransaction = convertToUserTransaction(transactionDto, Enums.TransactionType.DEPOSIT);
+        iTransactionService.saveTransaction(userTransaction);
+        account.saveTransaction(userTransaction);
 
-        return
-                AccountInfoResponse.builder()
-                                   .accountNumber(account.getAccountNumber())
-                                   .accountBalance(account.getBalance())
-                                   .accountName(user.getLastName())
-                                   .build();
+        accountRepository.save(account);
+
+        // send notification
+
+        sendNotification(
+                account.getUser().getPhoneToken().getToken(),
+                createBodyNotification(userTransaction, account),
+                Map.of("amount", amount.toString())
+        );
+
+        return accountMapper.toAccountInfoResponse(account);
     }
 
     @Override
     public AccountInfoResponse debitAccount(CreditDebitRequest creditDebitRequest) {
         Account account = getAccountByAccountNumber(creditDebitRequest.getAccountNumber());
 
-        UserResponse user = userService.getUserReponeseByID(account.getUser().getId());
-
         BigDecimal amount = creditDebitRequest.getAmount();
 
         if (account.getBalance()
-                   .compareTo(amount) < 0) {
+                   .compareTo(amount) < 0)
             throw new AppException(ErrorResponse.INSUFFICIENT_BALANCE);
-        }
 
         account.setBalance(account.getBalance()
                                   .subtract(amount));
 
         accountRepository.save(account);
         TransactionDto transactionDto = TransactionDto.builder()
-                                                      .transactionType(Enums.TransactionType.WITHDRAWAL.toString())
                                                       .amount(amount)
                                                       .fromAccount(account.getAccountNumber())
                                                       .toAccount("SELF")
-                                                      .status("SUCCESS")
+                                                      .description("Withdraw money")
                                                       .build();
 
-        iTransactionService.saveTransaction(transactionDto);
+        UserTransaction userTransaction = convertToUserTransaction(transactionDto, Enums.TransactionType.WITHDRAWAL);
+        iTransactionService.saveTransaction(userTransaction);
+        account.saveTransaction(userTransaction);
 
-        return AccountInfoResponse.builder()
-                                  .accountNumber(account.getAccountNumber())
-                                  .accountBalance(account.getBalance())
-//                                                                    .accountName(user.getFirst_name() + " " + user.getLast_name() + " " + user.getOther_name())
-                                  .build();
+        accountRepository.save(account);
 
+        // send notification
+
+        sendNotification(
+                account.getUser().getPhoneToken().getToken(),
+                createBodyNotification(userTransaction, account),
+                Map.of("amount", amount.toString())
+        );
+        return accountMapper.toAccountInfoResponse(account);
     }
 
     @Override
@@ -215,45 +237,86 @@ public class AccountServiceImpl implements IAccountService {
         toAccount.setBalance(toAccount.getBalance()
                                       .add(amount));
 
-        // Send email notification not needed for now
-//        EmailDetailRequest emailDebitAlert = EmailDetailRequest.builder()
-//                                                               .subject(
-//                                                                       "Account Transfer Notification")
-//                                                               .recipient(fromUser.getEmail())
-//                                                               .message("You have sent " + amount + " to " + toAccountName)
-//                                                               .build();
-//
-//        EmailDetailRequest emailCreditAlert = EmailDetailRequest.builder()
-//                                                                .subject(
-//                                                                        "Account Transfer Notification")
-//                                                                .recipient(toUser.getEmail())
-//                                                                .message("You have received " + amount + " from " + fromAccountName)
-//                                                                .build();
-//
-//        emailService.sendEmail(emailDebitAlert);
-//        emailService.sendEmail(emailCreditAlert);
-
         // save transaction
         TransactionDto transactionDto = TransactionDto.builder()
-                                                      .transactionType("TRANSFER")
                                                       .amount(amount)
                                                       .fromAccount(fromAccount.getAccountNumber())
                                                       .toAccount(toAccount.getAccountNumber())
-                                                      .status("SUCCESS")
+                                                      .description(transferRequest.getDescription())
                                                       .build();
 
-        iTransactionService.saveTransaction(transactionDto);
+        UserTransaction userTransaction = convertToUserTransaction(transactionDto, Enums.TransactionType.TRANSFER);
+        iTransactionService.saveTransaction(userTransaction);
+        fromAccount.saveTransaction(userTransaction);
+        toAccount.saveTransaction(userTransaction);
 
-        return AccountInfoResponse.builder()
-                                  .accountNumber(fromAccount.getAccountNumber())
-                                  .accountBalance(fromAccount.getBalance())
-                                  .accountName(fromAccountName)
-                                  .build();
+        accountRepository.save(fromAccount);
+        accountRepository.save(toAccount);
+
+        iTransactionService.saveTransaction(convertToUserTransaction(transactionDto, Enums.TransactionType.TRANSFER));
+
+        // send notification
+        sendNotification(
+                fromAccount.getUser().getPhoneToken().getToken(),
+                createBodyNotification(userTransaction, fromAccount),
+                Map.of("amount", amount.toString())
+        );
+        sendNotification(
+                toAccount.getUser().getPhoneToken().getToken(),
+                createBodyNotification(userTransaction, toAccount),
+                Map.of("amount", amount.toString())
+        );
+
+        return accountMapper.toAccountInfoResponse(fromAccount);
     }
 
     public Account getAccountByAccountNumber(String accountNumber) {
         return accountRepository.getAccountByAccountNumber(accountNumber)
-                                .orElseThrow(() -> new RuntimeException(
-                                        "Account not found"));
+                                .orElseThrow(() -> new AppException(ErrorResponse.ACCOUNT_NOT_FOUND));
+    }
+
+    public void updateAccount(Account account) {
+
+    }
+
+    public UserTransaction convertToUserTransaction(TransactionDto transactionDto, Enums.TransactionType transactionType) {
+        return UserTransaction.builder()
+                              .transactionType(transactionType)
+                              .amount(transactionDto.getAmount())
+                              .fromAccount(transactionDto.getFromAccount())
+                              .toAccount(transactionDto.getToAccount())
+                              .account(getAccountByAccountNumber(transactionDto.getFromAccount()))
+                              .status(Enums.TransactionStatus.SUCCESS)
+                              .description(transactionDto.getDescription())
+                              .build();
+    }
+
+    public void sendNotification(
+            String token, String body, Map<String, String> data
+    ) {
+        NotificationMessageDTO notificationMessageDTO = NotificationMessageDTO.builder()
+                                                                              .recipientToken(token)
+                                                                              .title(title)
+                                                                              .body(body)
+                                                                              .image("")
+                                                                              .data(data)
+                                                                              .build();
+        firebaseMessagingService.sendNotification(notificationMessageDTO);
+        log.info("Notification sent successfully");
+    }
+
+    public String createBodyNotification(UserTransaction userTransaction, Account account) {
+        String transactionAmount = userTransaction.getAmount().toString();
+        Enums.TransactionType transactionType = userTransaction.getTransactionType();
+
+        if (transactionType.equals(Enums.TransactionType.DEPOSIT))
+            transactionAmount = "+" + transactionAmount + "VND";
+        else if (transactionType.equals(Enums.TransactionType.WITHDRAWAL))
+            transactionAmount = "-" + transactionAmount + "VND";
+
+        return "Time: " + convertTime(userTransaction.getCreatedAt()) + "\n" +
+                "Account: " + account.getAccountNumber() + "\n" +
+                "Transaction amount: " + transactionAmount + "VND\n" +
+                "Current balance: " + account.getBalance() + "VND";
     }
 }

@@ -13,8 +13,6 @@ import java.math.BigDecimal;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TransactionDto implements Serializable {
-    String transactionType;
-
     @PhoneNumberConstraint(
             min = 10,
             message = "INVALID_ACCOUNT_NUMBER"
@@ -30,6 +28,4 @@ public class TransactionDto implements Serializable {
     BigDecimal amount;
 
     String description;
-
-    String status;
 }

@@ -49,7 +49,6 @@ public class LoanDisbursementController {
         if (account.isEmpty()) {
             return new BaseResponse<>("Account not found");
         }
-
         iAccountService.creditAccount(
                 CreditDebitRequest.builder()
                                   .accountNumber(account.get().getAccountNumber())

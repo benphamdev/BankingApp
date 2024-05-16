@@ -56,6 +56,7 @@ public enum ErrorResponse {
     POST_NOT_FOUND(1026, "Post not found", HttpStatus.NOT_FOUND),
     TAG_NOT_FOUND(1027, "Tag not found", HttpStatus.NOT_FOUND),
     TAG_ALREADY_EXISTS(1028, "Tag already exists", HttpStatus.BAD_REQUEST),
+    SAVING_NOT_FOUND(1029, "Saving not found", HttpStatus.NOT_FOUND),
     ;
 
     int code;

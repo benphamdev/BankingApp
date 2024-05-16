@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface SavingRepository extends JpaRepository<Saving, Integer> {
@@ -29,4 +31,9 @@ public interface SavingRepository extends JpaRepository<Saving, Integer> {
     )
     void updateStatusRefund(int id, boolean statusRefund);
 
+    // find by user id
+
+    Optional<Saving> findByUserId(Integer userId);
+
+    List<Saving> findSavingsByStatusRefundIsFalse();
 }

@@ -1,8 +1,8 @@
 package com.banking.thejavabanking.models.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.banking.thejavabanking.models.Enums;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -19,7 +19,8 @@ import java.math.BigDecimal;
 @Table(name = "tbl_user_transaction")
 public class UserTransaction extends BaseEntity implements Serializable {
     @Column(name = "transaction_type")
-    String transactionType;
+    @Enumerated(EnumType.STRING)
+    Enums.TransactionType transactionType;
 
     @Column(name = "from_account")
     String fromAccount;
@@ -34,5 +35,11 @@ public class UserTransaction extends BaseEntity implements Serializable {
     String description;
 
     @Column(name = "status")
-    String status;
+    @Enumerated(EnumType.STRING)
+    Enums.TransactionStatus status;
+
+    @ManyToOne
+    @JoinColumn(name = "account_id")
+    @JsonIgnore
+    Account account;
 }

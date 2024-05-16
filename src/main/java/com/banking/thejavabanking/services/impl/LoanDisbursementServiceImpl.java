@@ -22,7 +22,6 @@ public class LoanDisbursementServiceImpl implements ILoanDisbursementService {
 
     @Override
     public LoanDisbursement createLoanDisbursement(LoanDisbursement loanDisbursement) {
-
         return loanDisbursementRepository.save(loanDisbursement);
     }
 

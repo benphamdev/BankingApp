@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 @Getter
@@ -14,11 +15,15 @@ import java.util.Set;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserResponse {
-    int id;
+    long id;
     String firstName;
     String lastName;
     String otherName;
+    LocalDate dob;
+    String gender;
+    String address;
     String email;
+    String phoneNumber;
     String profilePicture;
     Set<RoleResponse> roles;
 

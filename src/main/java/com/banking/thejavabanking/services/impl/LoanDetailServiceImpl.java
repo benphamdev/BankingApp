@@ -14,9 +14,11 @@ import com.banking.thejavabanking.repositories.AccountRepository;
 import com.banking.thejavabanking.repositories.LoanDetailRepository;
 import com.banking.thejavabanking.services.ILoanDetailService;
 import com.banking.thejavabanking.utils.InterestUtils;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -187,8 +189,8 @@ public class LoanDetailServiceImpl implements ILoanDetailService {
 //        return loanDetailRepository.existsByUserId(id);
 //    }
 
-    //    @Scheduled(fixedRate = 5000000)
-//    @Transactional
+    @Scheduled(fixedRate = 10000000)
+    @Transactional
     public void updateLoanDetailStatus() {
         List<LoanDetail> loanDetails = loanDetailRepository.findAll();
         for (LoanDetail loanDetail : loanDetails) {

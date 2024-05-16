@@ -1,4 +1,4 @@
-package com.banking.thejavabanking.repositories;
+package com.banking.thejavabanking.repositories.search;
 
 import com.banking.thejavabanking.dto.respones.PageResponse;
 import com.banking.thejavabanking.models.entity.Account;
@@ -20,13 +20,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.banking.thejavabanking.utils.AppConst.SEARCH_OPERATOR;
-import static com.banking.thejavabanking.utils.AppConst.SORT_BY;
+import static com.banking.thejavabanking.utils.AppConst.*;
 
 @Repository
 public class SearchRepository {
-
-    private static final String LIKE_FORMAT = "%%%s%%";
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -222,5 +219,4 @@ public class SearchRepository {
         }
         return entityManager.createQuery(query).getSingleResult();
     }
-
 }

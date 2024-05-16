@@ -8,6 +8,8 @@ import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -40,4 +42,19 @@ public class Account extends BaseEntity implements Serializable {
     )
     @JsonIgnore
     private User user;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    List<UserTransaction> userTransactions = new ArrayList<>();
+
+    public void saveTransaction(UserTransaction userTransaction) {
+        if (userTransaction != null) {
+            if (userTransactions == null) {
+                userTransactions = new ArrayList<>();
+            }
+            userTransactions.add(userTransaction);
+            userTransaction.setAccount(this);
+        }
+    }
+
 }

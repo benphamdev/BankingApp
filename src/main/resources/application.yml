@@ -8,16 +8,16 @@ server:
   servlet:
     context-path: /api/v1
     multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
+      max-file-size: 100MB
+      max-request-size: 100MB
 
 jwt:
   secret: "2J3LSn1Nu6bpNes0Yz4vkEmzjYmCoA7C6vcAJCO36acfjQZab5SAiQPk+OzGJ4lh"
   expiration: 86400000
 
 #send sms
-#twilio:
-#  AccountSID: "ACd9870b3b2857941ce8ba68f2852e3f3b"
-#  AuthToken: "a009cc8d34019a35551c432fa82dede5"
-#  phoneNumber: "+84833998180"
+twilio:
+  AccountSID: "ACd9870b3b2857941ce8ba68f2852e3f3b"
+  AuthToken: "a009cc8d34019a35551c432fa82dede5"
+  phoneNumber: "+84833998180"
 

@@ -107,7 +107,11 @@ public class Enums {
         YENBAI;
     }
 
-    public enum EGender {
+    public enum Gender {
         MALE, FEMALE
+    }
+
+    public enum TransactionStatus {
+        SUCCESS, FAILED
     }
 }

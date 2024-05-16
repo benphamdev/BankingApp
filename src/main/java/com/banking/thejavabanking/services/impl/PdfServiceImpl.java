@@ -6,7 +6,6 @@ import com.banking.thejavabanking.models.entity.Account;
 import com.banking.thejavabanking.models.entity.User;
 import com.banking.thejavabanking.models.entity.UserTransaction;
 import com.banking.thejavabanking.repositories.AccountRepository;
-import com.banking.thejavabanking.repositories.UserRepository;
 import com.banking.thejavabanking.services.IPdfService;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -28,15 +27,11 @@ import java.util.Optional;
         level = lombok.AccessLevel.PRIVATE
 )
 public class PdfServiceImpl implements IPdfService {
-    UserRepository userRepository;
     EmailServiceImpl emailService;
     AccountRepository accountRepository;
 
     @Override
     public void exportTransactionToPdf(
-//            List<UserTransaction> transactions, String pdfPath, LocalDate startDate,
-//            LocalDate endDate,
-//            String accountNumber
             ExportTransactionToPdfRequest exportTransactionToPdfRequest
     ) {
         try {
@@ -119,9 +114,9 @@ public class PdfServiceImpl implements IPdfService {
             List<UserTransaction> transactions = exportTransactionToPdfRequest.getTransactions();
             transactions.forEach(transaction -> {
                 transactionTable.addCell(new Phrase(transaction.getCreatedAt().toString()));
-                transactionTable.addCell(new Phrase(transaction.getTransactionType()));
+                transactionTable.addCell(new Phrase(transaction.getTransactionType().toString()));
                 transactionTable.addCell(new Phrase(transaction.getAmount().toString()));
-                transactionTable.addCell(new Phrase(transaction.getStatus()));
+                transactionTable.addCell(new Phrase(transaction.getStatus().toString()));
             });
 
             document.add(bankInfoTable);
@@ -129,15 +124,18 @@ public class PdfServiceImpl implements IPdfService {
             document.add(transactionTable);
 
             document.close();
+
             // send email with attachment
-            EmailDetailRequest emailDetail = EmailDetailRequest.builder()
-                                                               .recipient(user.getEmail())
-                                                               .subject("Bank Statement")
-                                                               .message(
-                                                                       "Please find the attached bank statement")
-                                                               .attachment(
-                                                                       exportTransactionToPdfRequest.getPdfPath())
-                                                               .build();
+            EmailDetailRequest emailDetail =
+                    EmailDetailRequest.builder()
+                                      .recipient(user.getEmail())
+                                      .subject("Bank Statement")
+                                      .message("List of transactions in the period from " +
+                                                       exportTransactionToPdfRequest.getStartDate() + " to " +
+                                                       exportTransactionToPdfRequest.getEndDate() +
+                                                       " has been exported to PDF. Please check the attachment.")
+                                      .attachment(exportTransactionToPdfRequest.getPdfPath())
+                                      .build();
 
             emailService.sendEmailWithAttachment(emailDetail);
 

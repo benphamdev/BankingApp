@@ -19,16 +19,20 @@ spring:
           auth: true
           starttls:
             enable: true
-#  security:
-#    oauth2:
-#      client:
-#        registration:
-#          #          google:
-#          #            client-id: <client-id>
-#          #            client-secret: <secret>
-#          github:
-#            client-id: Iv23liOqqtE8AHc7v9T6
-#            client-secret: 23b38c7602df71a0da677f702dcaf3888cb11026
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  security:
+    oauth2:
+      client:
+        registration:
+          #          google:
+          #            client-id: <client-id>
+          #            client-secret: <secret>
+          github:
+            client-id: Iv23liOqqtE8AHc7v9T6
+            client-secret: 23b38c7602df71a0da677f702dcaf3888cb11026
 
 springdoc:
   api-docs:

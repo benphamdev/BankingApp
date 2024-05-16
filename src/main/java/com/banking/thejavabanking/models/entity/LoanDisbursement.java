@@ -1,5 +1,6 @@
 package com.banking.thejavabanking.models.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -43,5 +44,6 @@ public class LoanDisbursement extends BaseEntity implements Serializable {
     @JoinColumn(
             name = "loan_detail_id"
     )
+    @JsonIgnore
     LoanDetail loanDetail;
 }

@@ -32,7 +32,7 @@ public class LoanDetail extends BaseEntity implements Serializable {
     @Column(name = "reference_number")
     String referenceNumber;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "user_id")
     User user;
 

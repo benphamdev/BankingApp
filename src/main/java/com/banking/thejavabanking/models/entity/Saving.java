@@ -1,8 +1,7 @@
 package com.banking.thejavabanking.models.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -22,9 +21,6 @@ public class Saving extends BaseEntity implements Serializable {
     @Column(name = "maturation_date")
     LocalDateTime maturationDate;
 
-    @Column(name = "user_id")
-    int userId;
-
     @Column(name = "base_amount")
     BigDecimal baseAmount;
 
@@ -37,4 +33,9 @@ public class Saving extends BaseEntity implements Serializable {
     @Column(name = "status_refund")
     @Builder.Default
     boolean statusRefund = false;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
+    User user;
 }

@@ -9,6 +9,7 @@ import com.banking.thejavabanking.dto.respones.BaseResponse;
 import com.banking.thejavabanking.dto.respones.IntrospectResponse;
 import com.banking.thejavabanking.services.impl.AuthenticationImpl;
 import com.nimbusds.jose.JOSEException;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,12 +29,17 @@ import java.text.ParseException;
 public class AuthenticationController {
     AuthenticationImpl authenticationService;
 
+    @Operation(
+            summary = "Login",
+            description = "Login to the system"
+    )
     @PostMapping("/login")
     BaseResponse<AuthenticationResponse> authenticate(
             @RequestBody LoginRequestDTO request
     ) {
         var res = authenticationService.login(request);
         return BaseResponse.<AuthenticationResponse>builder()
+                           .message("Login success")
                            .data(res)
                            .build();
     }
@@ -54,6 +60,7 @@ public class AuthenticationController {
     ) throws ParseException, JOSEException {
         authenticationService.logout(logoutRequest);
         return BaseResponse.<Void>builder()
+                           .message("Logout success")
                            .build();
     }
 

@@ -8,17 +8,20 @@ import com.banking.thejavabanking.dto.respones.UserResponse;
 import com.banking.thejavabanking.exceptions.AppException;
 import com.banking.thejavabanking.exceptions.ErrorResponse;
 import com.banking.thejavabanking.mapper.UserMapper;
+import com.banking.thejavabanking.models.entity.PhoneToken;
 import com.banking.thejavabanking.models.entity.Photo;
 import com.banking.thejavabanking.models.entity.User;
+import com.banking.thejavabanking.repositories.PhoneTokenRepository;
 import com.banking.thejavabanking.repositories.PhotoRepository;
 import com.banking.thejavabanking.repositories.RoleRepository;
-import com.banking.thejavabanking.repositories.SearchRepository;
 import com.banking.thejavabanking.repositories.UserRepository;
+import com.banking.thejavabanking.repositories.search.SearchRepository;
 import com.banking.thejavabanking.services.IEmailService;
 import com.banking.thejavabanking.services.IPhotoService;
 import com.banking.thejavabanking.services.IUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -47,6 +51,7 @@ import static com.banking.thejavabanking.utils.AppConst.SORT_BY;
         makeFinal = true
 )
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements IUserService {
     IEmailService emailService;
     UserRepository userRepository;
@@ -56,9 +61,10 @@ public class UserServiceImpl implements IUserService {
     IPhotoService iPhotoService;
     PhotoRepository photoRepository;
     SearchRepository searchRepository;
+    PhoneTokenRepository phoneTokenRepository;
 
     @Override
-    public UserResponse createUser(UserCreationRequest userRequest) {
+    public long createUser(UserCreationRequest userRequest) {
         if (userRepository.existsByEmail(userRequest.getEmail()))
             throw new AppException(ErrorResponse.EMAIL_EXISTS);
 
@@ -67,16 +73,19 @@ public class UserServiceImpl implements IUserService {
 
         User user = userMapper.toEntity(userRequest);
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-        User newUser = userRepository.save(user);
+
+        // add role default to user
+
+        userRepository.save(user);
 
         // Send email notification
         emailService.sendEmail(EmailDetailRequest.builder()
-                                                 .recipient(newUser.getEmail())
+                                                 .recipient(user.getEmail())
                                                  .message("Welcome to The Java Banking")
                                                  .subject("Account Creation")
                                                  .build());
 
-        return getUserReponeseByID(newUser.getId());
+        return user.getId();
     }
 
     @Override
@@ -121,7 +130,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public UserResponse updateUser(Integer id, UserUpdateRequest request) {
+    public void updateUser(Integer id, UserUpdateRequest request) {
         User user = userRepository.findUserById(id)
                                   .orElseThrow(() -> new AppException(ErrorResponse.USER_NOT_FOUND));
         userMapper.updateEntity(user, request);
@@ -132,7 +141,7 @@ public class UserServiceImpl implements IUserService {
 
         user.setRoles(new HashSet<>(roles));
 
-        return userMapper.toResponse(userRepository.save(user));
+        userMapper.toResponse(userRepository.save(user));
     }
 
     public String getUserName(UserResponse user) {
@@ -146,8 +155,10 @@ public class UserServiceImpl implements IUserService {
         if (bi == null) {
             throw new AppException(ErrorResponse.INVALID_IMAGE);
         }
-        User user = userRepository.findUserById(userId)
-                                  .orElseThrow(() -> new AppException(ErrorResponse.USER_NOT_FOUND));
+//        User user = userRepository.findUserById(userId)
+//                                  .orElseThrow(() -> new AppException(ErrorResponse.USER_NOT_FOUND));
+
+        User user = getUserById(userId);
 
         Map result = iPhotoService.upload(profilePicture);
 
@@ -170,11 +181,31 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public void updatePhoneToken(Integer userId, String phoneToken) {
+        User user = getUserById(userId);
+        PhoneToken phoneToken1 = PhoneToken.builder()
+                                           .token(phoneToken)
+                                           .build();
+        phoneTokenRepository.save(phoneToken1);
+        user.setPhoneToken(phoneToken1);
+        userRepository.save(user);
+    }
+
+    @Override
     public void deleteUser(Integer id) {
         User user = userRepository.findUserById(id)
                                   .orElseThrow(() -> new AppException(ErrorResponse.USER_NOT_FOUND));
 
         userRepository.delete(user);
+    }
+
+    @Override
+    public List<User> getAllUsersWithBirthdayToday() {
+        LocalDate currentDate = LocalDate.now();
+        int day = currentDate.getDayOfMonth();
+        int month = currentDate.getMonthValue();
+        log.info("Day: {}, Month: {}", day, month);
+        return userRepository.findUserByDob();
     }
 
     // default pageNo starts from 0
@@ -186,9 +217,6 @@ public class UserServiceImpl implements IUserService {
 
         Page<User> pageUser = userRepository.findAll(pageable);
 
-//        return pageUser.stream()
-//                       .map(userMapper::toResponse)
-//                       .toList();
         return PageResponse.builder()
                            .page(pageUser.getNumber())
                            .size(pageUser.getSize())
@@ -215,13 +243,8 @@ public class UserServiceImpl implements IUserService {
             }
         }
 
-//        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);
-
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sorts));
         Page<User> pageUser = userRepository.findAll(pageable);
-//        return pageUser.stream()
-//                       .map(userMapper::toResponse)
-//                       .toList();
         return PageResponse.builder()
                            .page(pageUser.getNumber())
                            .size(pageUser.getSize())
@@ -233,9 +256,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public PageResponse<?> getAllUsersWithSortByMultiColumns(
-            int pageNo, int pageSize, String... sorts
-    ) {
+    public PageResponse<?> getAllUsersWithSortByMultiColumns(int pageNo, int pageSize, String... sorts) {
         if (pageNo > 0) pageNo--;
 
         List<Sort.Order> orders = new ArrayList<>();
@@ -255,9 +276,6 @@ public class UserServiceImpl implements IUserService {
 
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(orders));
         Page<User> pageUser = userRepository.findAll(pageable);
-//        return pageUser.stream()
-//                       .map(userMapper::toResponse)
-//                       .toList();
         return PageResponse.builder()
                            .page(pageNo)
                            .size(pageSize)

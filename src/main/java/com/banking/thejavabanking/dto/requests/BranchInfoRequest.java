@@ -8,5 +8,5 @@ import java.io.Serializable;
 public class BranchInfoRequest implements Serializable {
     private String branchName;
     private String address;
-    private int provinceId;
+    private String provinceName;
 }

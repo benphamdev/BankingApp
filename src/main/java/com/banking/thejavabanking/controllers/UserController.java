@@ -28,7 +28,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 )
 @Slf4j
 public class UserController {
-    final UserServiceImpl userService;
+    private final UserServiceImpl userService;
 
     public UserController(UserServiceImpl userService) {this.userService = userService;}
 
@@ -41,26 +41,25 @@ public class UserController {
             description = "Account created successfully"
     )
     @PostMapping(value = "/signup")
-    public BaseResponse<UserResponse> createAccount(
-            @RequestBody
-            @Valid
-            UserCreationRequest userRequest
+    public BaseResponse<Long> createAccount(
+            @RequestBody @Valid UserCreationRequest userRequest
     ) {
-        return BaseResponse.<UserResponse>builder()
-                           .message("Account created successfully")
-                           .data(userService.createUser(userRequest))
-                           .build();
+        log.info(
+                "Request to create a new account , {}, {}",
+                userRequest.getFirstName(),
+                userRequest.getLastName()
+        );
+        long userId = userService.createUser(userRequest);
+        return new BaseResponse<>(HttpStatus.CREATED.value(), "Account created successfully", userId);
     }
 
     @PutMapping("/{userId}")
-    public BaseResponse<UserResponse> updateUser(
-            @PathVariable("userId") int id,
+    public BaseResponse<Void> updateUser(
+            @PathVariable("userId") Integer id,
             @RequestBody UserUpdateRequest user
     ) {
-        return BaseResponse.<UserResponse>builder()
-                           .message("User updated successfully")
-                           .data(userService.updateUser(id, user))
-                           .build();
+        userService.updateUser(id, user);
+        return new BaseResponse<>(HttpStatus.OK.value(), "User updated successfully");
     }
 
     @GetMapping("/myProfile")
@@ -79,6 +78,17 @@ public class UserController {
         return BaseResponse.<UserResponse>builder()
                            .message("Profile picture updated successfully")
                            .data(userService.updateProfile(userId, profilePicture))
+                           .build();
+    }
+
+    @GetMapping("/{userId}")
+    public BaseResponse<Void> updatePhoneToken(
+            @PathVariable("userId") int userId,
+            @RequestParam("phoneToken") String phoneToken
+    ) {
+        userService.updatePhoneToken(userId, phoneToken);
+        return BaseResponse.<Void>builder()
+                           .message("Phone token updated successfully")
                            .build();
     }
 

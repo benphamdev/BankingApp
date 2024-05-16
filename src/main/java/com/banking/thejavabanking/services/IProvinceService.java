@@ -1,17 +1,19 @@
 package com.banking.thejavabanking.services;
 
+import com.banking.thejavabanking.dto.respones.ProvinceResponse;
 import com.banking.thejavabanking.models.entity.Province;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface IProvinceService {
-    List<Province> getAllProvinces();
+    List<ProvinceResponse> getAllProvinces();
 
-    Optional<Province> getProvinceById(int id);
+    Optional<Province> getProvinceById(Integer id);
 
-    Province createProvince(Province province);
+    Optional<Province> getProvinceByName(String name);
 
-    void deleteProvince(int id);
-    
+    Integer createProvince(Province province);
+
+    void deleteProvince(Integer id);
 }

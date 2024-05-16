@@ -1,11 +1,12 @@
 package com.banking.thejavabanking.controllers;
 
 import com.banking.thejavabanking.dto.respones.BaseResponse;
+import com.banking.thejavabanking.dto.respones.ProvinceResponse;
 import com.banking.thejavabanking.exceptions.AppException;
 import com.banking.thejavabanking.models.entity.Province;
 import com.banking.thejavabanking.services.impl.ProvinceServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,21 +26,34 @@ public class ProvinceController {
     }
 
     @PostMapping("/create")
-    public BaseResponse<Province> createProvince(
+    @Operation(summary = "Create a new province", description = "Create a new province")
+    public BaseResponse<Integer> createProvince(
             @RequestBody Province province
     ) {
-        Province ans = provinceService.createProvince(province);
+        Integer ans = provinceService.createProvince(province);
         if (ans == null)
             throw new AppException(PROVINCE_EXISTS);
-        return BaseResponse.<Province>builder()
+        return BaseResponse.<Integer>builder()
+                           .message("Create province successfully")
                            .data(ans)
                            .build();
     }
 
+    //    @GetMapping
+//    @Operation(summary = "Get all provinces", description = "Get all provinces")
+//    public ResponseEntity<List<Province>> getAllProvinces() {
+//        List<Province> provinces = provinceService.getAllProvinces();
+//        return ResponseEntity.ok(provinces);
+//    }
+
     @GetMapping
-    public ResponseEntity<List<Province>> getAllProvinces() {
-        List<Province> provinces = provinceService.getAllProvinces();
-        return ResponseEntity.ok(provinces);
+    @Operation(summary = "Get all provinces", description = "Get all provinces")
+    public BaseResponse<List<ProvinceResponse>> getAllProvinces() {
+        List<ProvinceResponse> provinces = provinceService.getAllProvinces();
+        return BaseResponse.<List<ProvinceResponse>>builder()
+                           .message("Get all provinces successfully")
+                           .data(provinces)
+                           .build();
     }
 
     @GetMapping("/{id}")

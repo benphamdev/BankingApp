@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -20,13 +21,13 @@ import java.time.LocalDate;
 public abstract class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
+//    @JsonIgnore
     Integer id;
 
     @Column(name = "created_at")
     @JsonIgnore
     @CreationTimestamp
-    LocalDate createdAt;
+    LocalDateTime createdAt;
 
     @Column(name = "modified_at")
     @JsonIgnore

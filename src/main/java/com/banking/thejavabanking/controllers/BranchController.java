@@ -3,19 +3,19 @@ package com.banking.thejavabanking.controllers;
 import com.banking.thejavabanking.dto.requests.BranchInfoRequest;
 import com.banking.thejavabanking.dto.requests.BranchUpdateRequest;
 import com.banking.thejavabanking.dto.respones.BaseResponse;
+import com.banking.thejavabanking.dto.respones.BranchResponse;
 import com.banking.thejavabanking.exceptions.AppException;
 import com.banking.thejavabanking.models.entity.BranchInfo;
 import com.banking.thejavabanking.services.impl.BranchInfoServiceImpl;
-import com.banking.thejavabanking.services.impl.ProvinceServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
 import static com.banking.thejavabanking.exceptions.ErrorResponse.BRANCH_NOT_FOUND;
-import static com.banking.thejavabanking.exceptions.ErrorResponse.PROVINCE_NOT_FOUND;
 
 @RestController
 @RequestMapping("/branch")
@@ -24,15 +24,16 @@ import static com.banking.thejavabanking.exceptions.ErrorResponse.PROVINCE_NOT_F
         makeFinal = true,
         level = lombok.AccessLevel.PRIVATE
 )
+@Slf4j
 public class BranchController {
     BranchInfoServiceImpl branchInfoService;
-    ProvinceServiceImpl provinceService;
 
     @GetMapping
-    public BaseResponse<List<BranchInfo>> getAllBranches() {
-        return BaseResponse.<List<BranchInfo>>builder()
+    public BaseResponse<List<BranchResponse>> getAllBranches() {
+        log.info("Getting all branches");
+        return BaseResponse.<List<BranchResponse>>builder()
+                           .message("List of branches")
                            .data(branchInfoService.getAllBranchInfo())
-                           .message("Branches found")
                            .build();
     }
 
@@ -41,8 +42,11 @@ public class BranchController {
             @PathVariable int id
     ) {
         Optional<?> branch = branchInfoService.getBranchInfoById(id);
+
         if (branch.isEmpty())
             throw new AppException(BRANCH_NOT_FOUND);
+
+        log.info("Getting branch by id: {}", id);
         return BaseResponse.<BranchInfo>builder()
                            .data((BranchInfo) branch.get())
                            .message("Branch found")
@@ -53,8 +57,9 @@ public class BranchController {
     public BaseResponse<List<BranchInfo>> getBranchByProvinceId(
             @RequestParam("provinceId") int provinceId
     ) {
-        if (provinceService.getProvinceById(provinceId).isEmpty())
-            throw new AppException(PROVINCE_NOT_FOUND);
+
+        log.info("Getting branches by province id: {}", provinceId);
+
         return BaseResponse.<List<BranchInfo>>builder()
                            .data(branchInfoService.getBranchInfoByProvinceId(provinceId))
                            .message("Branches found")
@@ -63,26 +68,12 @@ public class BranchController {
 
     // not constraint on province, check if province exists in the service
     @PostMapping("/create")
-    public BaseResponse<BranchInfo> createBranch(
+    public BaseResponse<Integer> createBranch(
             @RequestBody BranchInfoRequest branch
     ) {
-        if (provinceService.getProvinceById(branch.getProvinceId()).isEmpty())
-            throw new AppException(PROVINCE_NOT_FOUND);
-
-        BranchInfo branchInfo = new BranchInfo();
-        branchInfo.setBranchName(branch.getBranchName());
-        branchInfo.setAddress(branch.getAddress());
-        branchInfo.setProvince(provinceService.getProvinceById(branch.getProvinceId()).get());
-
-        branchInfo = branchInfoService.createBranchInfo(branchInfo);
-
-        branchInfo.getProvince().setName(
-                provinceService.getProvinceById(branchInfo.getProvince().getId())
-                               .get()
-                               .getName());
-
-        return BaseResponse.<BranchInfo>builder()
-                           .data(branchInfo)
+        Integer ans = branchInfoService.createBranchInfo(branch);
+        return BaseResponse.<Integer>builder()
+                           .data(ans)
                            .message("Branch created successfully")
                            .build();
     }

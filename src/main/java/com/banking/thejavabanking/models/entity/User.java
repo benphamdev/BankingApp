@@ -1,7 +1,10 @@
 package com.banking.thejavabanking.models.entity;
 
+import com.banking.thejavabanking.dto.validators.EnumValue;
+import com.banking.thejavabanking.models.Enums;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -31,6 +34,8 @@ public class User extends BaseEntity implements Serializable {
     @Column(name = "dob")
     LocalDate dob;
 
+    @NotNull
+    @EnumValue(name = "gender", enumClass = Enums.Gender.class)
     @Column(name = "gender")
     String gender;
 
@@ -79,6 +84,13 @@ public class User extends BaseEntity implements Serializable {
     )
     @JoinColumn(name = "photo_id")
     Photo photo;
+
+    @OneToOne(
+            cascade = CascadeType.ALL
+    )
+    @JoinColumn(name = "phone_token_id")
+    @JsonIgnore
+    PhoneToken phoneToken;
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)

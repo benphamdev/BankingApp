@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -39,5 +40,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
             nativeQuery = true
     )
     void updateUserByPhoto(String email, MultipartFile photo);
+
+    //  month and day of user = month and day of current date
+    @Query("SELECT u FROM User u WHERE MONTH(u.dob) = MONTH(CURRENT_DATE) AND DAY(u.dob) = DAY(CURRENT_DATE)")
+    List<User> findUserByDob();
 
 }

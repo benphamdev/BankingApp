@@ -9,9 +9,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface IUserService {
-    UserResponse createUser(UserCreationRequest userRequest);
+    long createUser(UserCreationRequest userRequest);
 
     User getUserByEmail(String email);
 
@@ -21,11 +22,15 @@ public interface IUserService {
 
     UserResponse getMyProfile();
 
-    UserResponse updateUser(Integer id, UserUpdateRequest userUpdateRequest);
+    void updateUser(Integer id, UserUpdateRequest userUpdateRequest);
 
     UserResponse updateProfile(int userId, MultipartFile profilePicture) throws IOException;
 
+    void updatePhoneToken(Integer userId, String phoneToken);
+
     void deleteUser(Integer id);
+
+    List<User> getAllUsersWithBirthdayToday();
 
     PageResponse<?> getAllUsersWithSortBy(int pageNo, int pageSize);
 

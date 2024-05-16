@@ -14,6 +14,8 @@ import java.math.BigDecimal;
 )
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class AccountInfoResponse {
+    Integer id;
+
     @Schema(
             description = "Account Name",
             example = "John Doe"

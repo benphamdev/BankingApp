@@ -1,21 +1,23 @@
 package com.banking.thejavabanking.services;
 
+import com.banking.thejavabanking.dto.requests.BranchInfoRequest;
 import com.banking.thejavabanking.dto.requests.BranchUpdateRequest;
+import com.banking.thejavabanking.dto.respones.BranchResponse;
 import com.banking.thejavabanking.models.entity.BranchInfo;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface IBranchInfoService {
-    BranchInfo createBranchInfo(BranchInfo branchInfo);
+    Integer createBranchInfo(BranchInfoRequest branchInfo);
 
-    void deleteBranchInfo(int id);
+    void deleteBranchInfo(Integer id);
 
-    List<BranchInfo> getAllBranchInfo();
+    List<BranchResponse> getAllBranchInfo();
 
-    Optional<BranchInfo> getBranchInfoById(int id);
+    Optional<BranchInfo> getBranchInfoById(Integer id);
 
-    List<BranchInfo> getBranchInfoByProvinceId(int provinceId);
+    List<BranchInfo> getBranchInfoByProvinceId(Integer provinceId);
 
-    void updateBranchInfo(int id, BranchUpdateRequest branchUpdateRequest);
+    void updateBranchInfo(Integer id, BranchUpdateRequest branchUpdateRequest);
 }

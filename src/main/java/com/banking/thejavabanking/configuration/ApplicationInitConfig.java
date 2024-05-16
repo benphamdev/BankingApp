@@ -35,18 +35,18 @@ public class ApplicationInitConfig {
     @Bean
     ApplicationRunner init(UserRepository userRepository) {
         return args -> {
-            if (userRepository.findByEmail("admin@gmail.com").isEmpty()) {
+            if (userRepository.findByEmail("admin").isEmpty()) {
                 var roles = Set.of(Enums.Role.ADMIN.name());
 
                 User admin = User.builder()
                                  .firstName("Admin")
-                                 .email("admin@gmail.com")
-                                 .password(passwordEncoder.encode("admin"))
+                                 .email("admin")
+                                 .password(passwordEncoder.encode("123456789"))
 //                                 .roles(roles)
                                  .build();
 
                 userRepository.save(admin);
-                log.warn("Admin user created with default password: admin");
+                log.warn("Admin user created with default password: 123456789");
             }
         };
     }
@@ -54,7 +54,7 @@ public class ApplicationInitConfig {
     @Bean
     FirebaseMessaging firebaseMessaging() throws IOException {
         GoogleCredentials credentials = GoogleCredentials.fromStream(new ClassPathResource(
-                "push-notification.json").getInputStream());
+                "firebase-notification.json").getInputStream());
         FirebaseOptions options = FirebaseOptions.builder()
                                                  .setCredentials(credentials)
                                                  .build();
@@ -66,5 +66,5 @@ public class ApplicationInitConfig {
     public void setUp() {
         Twilio.init(AccountSID, AuthToken);
     }
-
+    
 }

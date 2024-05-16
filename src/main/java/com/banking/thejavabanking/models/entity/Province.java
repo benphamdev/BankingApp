@@ -32,5 +32,5 @@ public class Province extends BaseEntity implements Serializable {
             mappedBy = "province"
     )
     @JsonIgnore
-    private List<BranchInfo> branchInfos = new ArrayList<>();
+    List<BranchInfo> branchInfos = new ArrayList<>();
 }

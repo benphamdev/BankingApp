@@ -27,6 +27,7 @@ public class SecurityConfig {
             "/webjars/**",
             "/user/create",
             "/auth/**",
+            "/transaction/**",
             "/user/**",
             "/province/**",
             "/branch/**",
@@ -36,13 +37,16 @@ public class SecurityConfig {
             "/loan-detail/**",
             "/push-notification/**",
             "/post/**",
+            "/saving/**",
             "/comment/**",
             "/otp/**",
             "/tag/**",
     };
 
+    private final CustomJwtDecoder customJwtDecoder;
+
     @Autowired
-    private CustomJwtDecoder customJwtDecoder;
+    public SecurityConfig(CustomJwtDecoder customJwtDecoder) {this.customJwtDecoder = customJwtDecoder;}
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

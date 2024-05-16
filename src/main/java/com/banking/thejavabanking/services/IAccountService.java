@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IAccountService {
-    AccountInfoResponse createAccount(AccountCreationRequest accountRequest);
+    Integer createAccount(AccountCreationRequest accountRequest);
 
     List<AccountInfoResponse> getAllAccounts();
 
@@ -20,6 +20,8 @@ public interface IAccountService {
     void deleteAccountById(Integer id);
 
     Account updateAccount(Integer id, Account accountRequest);
+
+    AccountInfoResponse getAccountInforByUserId(Integer userId);
 
     Optional<Account> getAccountByUserId(Integer userId);
 
