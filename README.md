@@ -1,7 +1,5 @@
 # Banking App Project
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-
 ## Description
 
 This project is a banking application that allows users to manage their finances. Users can create an account, deposit and withdraw money, view their transaction history, and more. The application is built with a focus on security and user-friendly interfaces.
@@ -12,10 +10,7 @@ This project is a banking application that allows users to manage their finances
 - [Functional](#functional)
 - [Usage](#usage)
 - [Contributing](#contributing)
-- [Tests](#tests)
 - [License](#license)
-
-## Installation
 
 ## Installation
 
@@ -24,7 +19,7 @@ To configure and install the Banking App project, follow these steps:
 1. Clone the project repository from GitHub:
 
     ```bash
-    git clone https://github.com/your-username/banking-app.git
+    git clone https://github.com/phamduyben/BankingApp.git
     ```
 
 2. Navigate to the project directory:
@@ -42,8 +37,8 @@ To configure and install the Banking App project, follow these steps:
 4. Set up the database:
 
     - Create a MySQL database named `banking_app`.
-    - Update the database configuration in the `application.properties` file located in the `src/main/resources` directory. Set the `spring.datasource.url`, `spring.datasource.username`, and `spring.datasource.password` properties according to your database configuration.
-
+    - Update the database configuration in the `application-dev.yml` file located in the `src/main/resources` directory. Set the `spring.datasource.url`, `spring.datasource.username`, and `spring.datasource.password` properties according to your database configuration.
+    
 5. Run the application:
 
     ```bash
@@ -55,6 +50,10 @@ To configure and install the Banking App project, follow these steps:
     Open your web browser and go to `http://localhost:8081` to access the Banking App.
 
 Note: Make sure you have Java and Maven installed on your system before proceeding with the installation.
+
+-Install jdk 17+ [install jdk](https://www.oracle.com/java/technologies/downloads/#java21)
+
+-Install maven 3.5+[install maven](https://maven.apache.org/download.cgi)
 
 If you encounter any issues during the installation process, refer to the project's documentation or seek help from the project's community.
 
@@ -93,15 +92,11 @@ These functionalities make the banking app a comprehensive solution for managing
 
 ## Usage
 
-After installation, you can start the application by running `npm start` in the project directory. You will then be able to access the application at `http://localhost:8081`.
+After installation, you can start the application by running `mvn spring-boot:run` in the project directory. You will then be able to access the application at `http://localhost:8081`.
 
 ## Contributing
 
 Contributions are welcome! Please read the [contributing guide](CONTRIBUTING.md) to learn about our development process, how to propose bugfixes and improvements, and how to build the application from source.
-
-## Tests
-
-To run the tests for the application, use the command `npm test` in the project directory.
 
 ## License
 
