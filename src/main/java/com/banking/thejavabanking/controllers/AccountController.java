@@ -9,7 +9,9 @@ import com.banking.thejavabanking.dto.respones.BaseResponse;
 import com.banking.thejavabanking.models.entity.Account;
 import com.banking.thejavabanking.services.impl.AccountServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +19,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/account")
+@Slf4j
+@Tag(name = "Account controller", description = "The Account API")
 public class AccountController {
     private final AccountServiceImpl accountService;
 
@@ -25,6 +29,10 @@ public class AccountController {
         this.accountService = accountService;
     }
 
+    @Operation(
+            summary = "Create Account",
+            description = "Create an account"
+    )
     @GetMapping("/create/{userId}/{branchInfoId}")
     public BaseResponse<Integer> createAccount(@PathVariable int userId, @PathVariable int branchInfoId) {
         Integer newAccount = accountService.createAccount(
@@ -46,7 +54,8 @@ public class AccountController {
 
     @GetMapping("/{id}")
     public BaseResponse<AccountInfoResponse> getAccountById(@PathVariable Integer id) {
-        AccountInfoResponse account = accountService.getAccountById(id).orElse(null);
+        AccountInfoResponse account = accountService.getAccountById(id)
+                                                    .orElse(null);
 
         if (account == null)
             throw new RuntimeException("Account not found");

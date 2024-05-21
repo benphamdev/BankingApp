@@ -98,7 +98,7 @@ public class TransactionController {
             description = "Send a request via this API to get user list by pageNo, pageSize and sort by multiple column"
     )
     @GetMapping("/list-user-and-search-with-paging-and-sorting/{accountID}")
-    public BaseResponse<?> getAllUsersWithPagingAndSorting(
+    public BaseResponse<?> getAllTransactionCurrentUserWithBySort(
             @PathVariable Integer accountID,
             @RequestParam(defaultValue = "0", required = false) int pageNo,
             @RequestParam(defaultValue = "20", required = false) int pageSize,

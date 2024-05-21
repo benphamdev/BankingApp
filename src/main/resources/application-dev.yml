@@ -1,4 +1,14 @@
+server:
+  port: 8081
+  servlet:
+    context-path: /api/v1
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
 spring:
+  config:
+    activate:
+      on-profile: dev
   datasource:
     username: root
     password: 123456789
@@ -19,10 +29,7 @@ spring:
           auth: true
           starttls:
             enable: true
-  servlet:
-    multipart:
-      max-file-size: 100MB
-      max-request-size: 100MB
+
   security:
     oauth2:
       client:
@@ -34,8 +41,14 @@ spring:
             client-id: Iv23liOqqtE8AHc7v9T6
             client-secret: 23b38c7602df71a0da677f702dcaf3888cb11026
 
-springdoc:
-  api-docs:
-    enabled: true
-  swagger-ui:
-    enabled: true
+open:
+  api:
+    title: The Java Banking API
+    version: 1.0.0
+    description: The Java Banking API
+    serverUrl: http://localhost:8081/api/v1/
+    serverDescription: Localhost
+    license: Apache License Version 2.0
+    licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.html
+    servers:
+      url: http://localhost:8081/api/v1/swagger-ui.html

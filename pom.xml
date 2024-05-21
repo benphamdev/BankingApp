@@ -139,21 +139,21 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <activatedProperties>dev</activatedProperties>
+                <spring.profiles.active>dev</spring.profiles.active>
             </properties>
         </profile>
 
         <profile>
             <id>test</id>
             <properties>
-                <activatedProperties>test</activatedProperties>
+                <spring.profiles.active>test</spring.profiles.active>
             </properties>
         </profile>
 
         <profile>
             <id>prod</id>
             <properties>
-                <activatedProperties>prod</activatedProperties>
+                <spring.profiles.active>prod</spring.profiles.active>
             </properties>
         </profile>
     </profiles>
