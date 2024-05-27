@@ -3,8 +3,8 @@ spring:
     name: the-java-banking
   profiles:
     active: @spring.profiles.active@
-server:
-  port: 80
+#server:
+#  port: 81
 #  servlet:
 #    context-path: /api/v1
 #    multipart:
