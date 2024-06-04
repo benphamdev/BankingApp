@@ -35,13 +35,15 @@ public class ApplicationInitConfig {
     @Bean
     ApplicationRunner init(UserRepository userRepository) {
         return args -> {
-            if (userRepository.findByEmail("admin").isEmpty()) {
+            if (userRepository.findByEmail("admin")
+                              .isEmpty()) {
                 var roles = Set.of(Enums.Role.ADMIN.name());
 
                 User admin = User.builder()
                                  .firstName("Admin")
                                  .email("admin")
                                  .password(passwordEncoder.encode("123456789"))
+                                 .gender("male")
 //                                 .roles(roles)
                                  .build();
 
@@ -66,5 +68,5 @@ public class ApplicationInitConfig {
     public void setUp() {
         Twilio.init(AccountSID, AuthToken);
     }
-    
+
 }
