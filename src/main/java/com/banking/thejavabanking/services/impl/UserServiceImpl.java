@@ -1,6 +1,5 @@
 package com.banking.thejavabanking.services.impl;
 
-import com.banking.thejavabanking.dto.requests.EmailDetailRequest;
 import com.banking.thejavabanking.dto.requests.UserCreationRequest;
 import com.banking.thejavabanking.dto.requests.UserUpdateRequest;
 import com.banking.thejavabanking.dto.respones.PageResponse;
@@ -16,6 +15,7 @@ import com.banking.thejavabanking.repositories.PhotoRepository;
 import com.banking.thejavabanking.repositories.RoleRepository;
 import com.banking.thejavabanking.repositories.UserRepository;
 import com.banking.thejavabanking.repositories.search.SearchRepository;
+import com.banking.thejavabanking.repositories.specification.UserSpecificationBuilder;
 import com.banking.thejavabanking.services.IEmailService;
 import com.banking.thejavabanking.services.IPhotoService;
 import com.banking.thejavabanking.services.IUserService;
@@ -43,6 +43,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.banking.thejavabanking.utils.AppConst.SEARCH_SPEC_OPERATOR;
 import static com.banking.thejavabanking.utils.AppConst.SORT_BY;
 
 @Service
@@ -79,19 +80,20 @@ public class UserServiceImpl implements IUserService {
         userRepository.save(user);
 
         // Send email notification
-        emailService.sendEmail(EmailDetailRequest.builder()
-                                                 .recipient(user.getEmail())
-                                                 .message("Welcome to The Java Banking")
-                                                 .subject("Account Creation")
-                                                 .build());
+//        emailService.sendEmail(EmailDetailRequest.builder()
+//                                                 .recipient(user.getEmail())
+//                                                 .message("Welcome to The Java Banking")
+//                                                 .subject("Account Creation")
+//                                                 .build());
 
         return user.getId();
     }
 
     @Override
     public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException(
-                "User not found"));
+        return userRepository.findByEmail(email)
+                             .orElseThrow(() -> new RuntimeException(
+                                     "User not found"));
     }
 
     @Override
@@ -110,7 +112,6 @@ public class UserServiceImpl implements IUserService {
                            .email(user.getEmail())
                            .firstName(user.getFirstName())
                            .lastName(user.getLastName())
-                           .otherName(user.getOtherName())
                            .build();
     }
 
@@ -122,7 +123,8 @@ public class UserServiceImpl implements IUserService {
     @Override
     public UserResponse getMyProfile() {
         var context = SecurityContextHolder.getContext();
-        String name = context.getAuthentication().getName();
+        String name = context.getAuthentication()
+                             .getName();
         User user = userRepository.findByEmail(name)
                                   .orElseThrow(() -> new AppException(ErrorResponse.USER_NOT_FOUND));
 
@@ -168,7 +170,8 @@ public class UserServiceImpl implements IUserService {
                            .build();
         photoRepository.save(photo);
 
-        String oldPhoto = user.getPhoto() != null ? user.getPhoto().getPublicId() : null;
+        String oldPhoto = user.getPhoto() != null ? user.getPhoto()
+                                                        .getPublicId() : null;
 
         user.setPhoto(photo);
         userRepository.save(user);
@@ -301,9 +304,42 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public PageResponse<?> advancedSearchWithSpecification(
-            Pageable pageable, String[] users, String[] search
-    ) {
-        return null;
+    public PageResponse<?> advancedSearchWithSpecification(Pageable pageable, String[] users, String[] search) {
+        Page<User> userList = null;
+        if (users != null && search != null) {
+            // TODO: Implement search by users and search
+
+        } else if (users != null) {
+            // TODO: Implement search by users => don't join with other table
+//            Specification<User> spec = UserSpec.hasFirstName("p");
+//            Specification<User> genderSpec = UserSpec.notEqualGender(Enums.Gender.FEMALE.toString());
+//            Specification<User> finalSpec = spec.and(genderSpec);
+//            userList = userRepository.findAll(finalSpec, pageable);
+
+            UserSpecificationBuilder userSpecificationBuilder = new UserSpecificationBuilder();
+            for (String user : users) {
+                Pattern pattern = Pattern.compile(SEARCH_SPEC_OPERATOR);
+                Matcher matcher = pattern.matcher(user);
+                if (matcher.find()) {
+                    userSpecificationBuilder.with(
+                            matcher.group(1),
+                            matcher.group(2),
+                            matcher.group(3),
+                            matcher.group(4),
+                            matcher.group(5)
+                    );
+                }
+            }
+            userList = userRepository.findAll(userSpecificationBuilder.build(), pageable);
+        } else userList = userRepository.findAll(pageable);
+
+        return PageResponse.builder()
+                           .page(pageable.getPageNumber())
+                           .size(pageable.getPageSize())
+                           .total(userList.getTotalPages())
+                           .items(userList.stream()
+                                          .map(userMapper::toResponse)
+                                          .toList())
+                           .build();
     }
 }

@@ -82,14 +82,16 @@ public class AccountServiceImpl implements IAccountService {
 
     @Override
     public List<AccountInfoResponse> getAllAccounts() {
-        return accountRepository.findAll().stream()
+        return accountRepository.findAll()
+                                .stream()
                                 .map(accountMapper::toAccountInfoResponse)
                                 .toList();
     }
 
     @Override
     public Optional<AccountInfoResponse> getAccountById(Integer id) {
-        Account account = accountRepository.findById(id).orElse(null);
+        Account account = accountRepository.findById(id)
+                                           .orElse(null);
         return Optional.ofNullable(accountMapper.toAccountInfoResponse(account));
     }
 
@@ -125,9 +127,13 @@ public class AccountServiceImpl implements IAccountService {
     public AccountInfoResponse balanceEnquiry(EnquiryRequest enquiryRequest) {
         Account account = getAccountByAccountNumber(enquiryRequest.getAccountNumber());
 
-        UserResponse user = userService.getUserReponeseByID(account.getUser().getId());
+        UserResponse user = userService.getUserReponeseByID(account.getUser()
+                                                                   .getId());
 
-        log.info("Account name: {}", account.getUser().getId());
+        log.info("Account name: {}",
+                 account.getUser()
+                        .getId()
+        );
 
         return accountMapper.toAccountInfoResponse(account);
     }
@@ -136,9 +142,12 @@ public class AccountServiceImpl implements IAccountService {
     public String nameEnquiry(EnquiryRequest enquiryRequest) {
         Account account = getAccountByAccountNumber(enquiryRequest.getAccountNumber());
 
-        log.info("Account name: {}", account.getUser().getId());
+        log.info("Account name: {}",
+                 account.getUser()
+                        .getId()
+        );
         User user = account.getUser();
-        return user.getOtherName();
+        return user.getFirstName();
     }
 
     @Override
@@ -168,7 +177,9 @@ public class AccountServiceImpl implements IAccountService {
         // send notification
 
         sendNotification(
-                account.getUser().getPhoneToken().getToken(),
+                account.getUser()
+                       .getPhoneToken()
+                       .getToken(),
                 createBodyNotification(userTransaction, account),
                 Map.of("amount", amount.toString())
         );
@@ -206,7 +217,9 @@ public class AccountServiceImpl implements IAccountService {
         // send notification
 
         sendNotification(
-                account.getUser().getPhoneToken().getToken(),
+                account.getUser()
+                       .getPhoneToken()
+                       .getToken(),
                 createBodyNotification(userTransaction, account),
                 Map.of("amount", amount.toString())
         );
@@ -218,8 +231,10 @@ public class AccountServiceImpl implements IAccountService {
         Account fromAccount = getAccountByAccountNumber(transferRequest.getFromAccountNumber());
         Account toAccount = getAccountByAccountNumber(transferRequest.getToAccountNumber());
 
-        UserResponse fromUser = userService.getUserReponeseByID(fromAccount.getUser().getId()),
-                toUser = userService.getUserReponeseByID(toAccount.getUser().getId());
+        UserResponse fromUser = userService.getUserReponeseByID(fromAccount.getUser()
+                                                                           .getId()),
+                toUser = userService.getUserReponeseByID(toAccount.getUser()
+                                                                  .getId());
 
         BigDecimal amount = transferRequest.getAmount();
 
@@ -257,12 +272,16 @@ public class AccountServiceImpl implements IAccountService {
 
         // send notification
         sendNotification(
-                fromAccount.getUser().getPhoneToken().getToken(),
+                fromAccount.getUser()
+                           .getPhoneToken()
+                           .getToken(),
                 createBodyNotification(userTransaction, fromAccount),
                 Map.of("amount", amount.toString())
         );
         sendNotification(
-                toAccount.getUser().getPhoneToken().getToken(),
+                toAccount.getUser()
+                         .getPhoneToken()
+                         .getToken(),
                 createBodyNotification(userTransaction, toAccount),
                 Map.of("amount", amount.toString())
         );
@@ -306,7 +325,8 @@ public class AccountServiceImpl implements IAccountService {
     }
 
     public String createBodyNotification(UserTransaction userTransaction, Account account) {
-        String transactionAmount = userTransaction.getAmount().toString();
+        String transactionAmount = userTransaction.getAmount()
+                                                  .toString();
         Enums.TransactionType transactionType = userTransaction.getTransactionType();
 
         if (transactionType.equals(Enums.TransactionType.DEPOSIT))

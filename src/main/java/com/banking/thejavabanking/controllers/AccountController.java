@@ -11,6 +11,7 @@ import com.banking.thejavabanking.services.impl.AccountServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +35,7 @@ public class AccountController {
             description = "Create an account"
     )
     @GetMapping("/create/{userId}/{branchInfoId}")
-    public BaseResponse<Integer> createAccount(@PathVariable int userId, @PathVariable int branchInfoId) {
+    public BaseResponse<Integer> createAccount(@PathVariable @Min(1) int userId, @PathVariable @Min(1) int branchInfoId) {
         Integer newAccount = accountService.createAccount(
                 new AccountCreationRequest(userId, branchInfoId));
         return BaseResponse.<Integer>builder()
@@ -53,7 +54,7 @@ public class AccountController {
     }
 
     @GetMapping("/{id}")
-    public BaseResponse<AccountInfoResponse> getAccountById(@PathVariable Integer id) {
+    public BaseResponse<AccountInfoResponse> getAccountById(@PathVariable @Min(1) Integer id) {
         AccountInfoResponse account = accountService.getAccountById(id)
                                                     .orElse(null);
 
@@ -68,7 +69,7 @@ public class AccountController {
 
     // chua test
     @PutMapping("/{id}")
-    public BaseResponse<Account> updateAccount(@PathVariable Integer id, Account account) {
+    public BaseResponse<Account> updateAccount(@PathVariable @Min(1) Integer id, Account account) {
         Account updatedAccount = accountService.updateAccount(id, account);
         return BaseResponse.<Account>builder()
                            .message("Account updated successfully")
@@ -77,7 +78,7 @@ public class AccountController {
     }
 
     @DeleteMapping("/{id}")
-    public BaseResponse<Void> deleteAccount(@PathVariable Integer id) {
+    public BaseResponse<Void> deleteAccount(@PathVariable @Min(1) Integer id) {
         accountService.deleteAccountById(id);
         return BaseResponse.<Void>builder()
                            .message("Account deleted successfully")
@@ -86,7 +87,7 @@ public class AccountController {
 
     @GetMapping("/user/{userId}")
     public BaseResponse<AccountInfoResponse> getAccountByUserId(
-            @PathVariable Integer userId
+            @PathVariable @Min(1) Integer userId
     ) {
         AccountInfoResponse account = accountService.getAccountInforByUserId(userId);
 

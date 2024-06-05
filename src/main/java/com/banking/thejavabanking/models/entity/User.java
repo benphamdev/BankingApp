@@ -28,11 +28,9 @@ public class User extends BaseEntity implements Serializable {
     @Column(name = "last_name")
     String lastName;
 
-    @Column(name = "other_name")
-    String otherName;
-
     @Column(name = "dob")
-    LocalDate dob;
+    LocalDate dob; //don't change in sql
+//    Date dob;
 
     @NotNull
     @EnumValue(name = "gender", enumClass = Enums.Gender.class)

@@ -11,9 +11,8 @@ public class PhoneNumberValidator implements ConstraintValidator<PhoneNumberCons
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value == null) {
-            return false;
-        }
+        if (value == null) return false;
+
         //validate phone numbers of format "0902345345"
         if (value.matches("\\d{10}")) return true;
             //validating phone number with -, . or spaces: 090-234-4567

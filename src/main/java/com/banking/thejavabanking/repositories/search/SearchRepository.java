@@ -101,7 +101,8 @@ public class SearchRepository {
 //                           .total(totalElements.intValue() / pageSize)
                            .total(page.getTotalPages())
 //                           .items(users)
-                           .items(page.stream().toList())
+                           .items(page.stream()
+                                      .toList())
                            .build();
     }
 
@@ -189,6 +190,58 @@ public class SearchRepository {
                             .getResultList();
     }
 
+    public List<User> getUsersJoined(
+            int pageNo, int pageSize, List<SearchCriteria> criteriaList, String sortBy,
+            String address
+    ) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
+        Root<User> root = query.from(User.class);
+
+        // solve condition search
+        Predicate predicate = criteriaBuilder.conjunction();
+        UserSearchCriteriaConsumer searchConsumer = new UserSearchCriteriaConsumer(
+                predicate,
+                criteriaBuilder,
+                root
+        );
+
+        if (StringUtils.hasText(address)) {
+            Join<Account, User> accountUserJoin = root.join("account");
+            Predicate addressPredicate = criteriaBuilder.like(
+                    accountUserJoin.get("accountNumber"),
+                    "%" + address + "%"
+            );
+            // search all field of account
+
+            query.where(predicate, addressPredicate);
+        } else {
+            criteriaList.forEach(searchConsumer);
+            predicate = searchConsumer.getPredicate();
+            query.where(predicate);
+        }
+
+        // solve sort by
+        if (StringUtils.hasLength(sortBy)) {
+            Pattern pattern = Pattern.compile(SORT_BY);
+            Matcher matcher = pattern.matcher(sortBy);
+            if (matcher.find()) {
+                String field = matcher.group(1);
+                String order = matcher.group(3);
+                if (order.equals("asc")) {
+                    query.orderBy(criteriaBuilder.asc(root.get(field)));
+                } else {
+                    query.orderBy(criteriaBuilder.desc(root.get(field)));
+                }
+            }
+        }
+
+        return entityManager.createQuery(query)
+                            .setFirstResult(pageNo)
+                            .setMaxResults(pageSize)
+                            .getResultList();
+    }
+
     private Long getTotalElements(List<SearchCriteria> criteriaList, String address) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
@@ -217,6 +270,7 @@ public class SearchRepository {
             query.select(criteriaBuilder.count(root));
             query.where(predicate);
         }
-        return entityManager.createQuery(query).getSingleResult();
+        return entityManager.createQuery(query)
+                            .getSingleResult();
     }
 }

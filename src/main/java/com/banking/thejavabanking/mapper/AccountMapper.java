@@ -27,7 +27,7 @@ public interface AccountMapper {
     )
     @Mapping(
             target = "accountName",
-            source = "user.otherName",
+            source = "user.firstName",
             qualifiedByName = "nullSafeString"
     )
     AccountInfoResponse toAccountInfoResponse(Account account);

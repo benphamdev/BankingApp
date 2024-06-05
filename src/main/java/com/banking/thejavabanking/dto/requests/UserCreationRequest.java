@@ -22,13 +22,12 @@ public class UserCreationRequest implements Serializable {
     @NotNull(message = "LAST_NAME_REQUIRED")
     String lastName;
 
-    @NotBlank(message = "OTHER_NAME_REQUIRED")
-    String otherName;
-
     @DobConstraint(
             min = 18,
             message = "INVALID_DOB"
     )
+//    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+//    @JsonFormat(pattern = "MM/dd/yyyy")
     LocalDate dob;
 
     String gender;

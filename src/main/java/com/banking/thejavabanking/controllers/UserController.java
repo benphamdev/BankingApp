@@ -41,7 +41,7 @@ public class UserController {
             description = "Account created successfully"
     )
     @PostMapping(value = "/signup")
-    public BaseResponse<Long> createAccount(
+    public BaseResponse<Long> addUser(
             @RequestBody @Valid UserCreationRequest userRequest
     ) {
         log.info(
@@ -55,7 +55,7 @@ public class UserController {
 
     @PutMapping("/{userId}")
     public BaseResponse<Void> updateUser(
-            @PathVariable("userId") Integer id,
+            @PathVariable("userId") @Min(1) Integer id,
             @RequestBody UserUpdateRequest user
     ) {
         userService.updateUser(id, user);
@@ -72,7 +72,7 @@ public class UserController {
 
     @PostMapping("/update-avatar")
     public BaseResponse<UserResponse> updateProfile(
-            @RequestParam("user_id") int userId,
+            @RequestParam("user_id") @Min(1) int userId,
             @RequestBody MultipartFile profilePicture
     ) throws IOException {
         return BaseResponse.<UserResponse>builder()
@@ -84,7 +84,7 @@ public class UserController {
     @GetMapping("/{userId}")
     public BaseResponse<Void> updatePhoneToken(
             @PathVariable("userId") int userId,
-            @RequestParam("phoneToken") String phoneToken
+            @RequestParam(value = "phoneToken", required = false) String phoneToken
     ) {
         userService.updatePhoneToken(userId, phoneToken);
         return BaseResponse.<Void>builder()
@@ -94,7 +94,7 @@ public class UserController {
 
     @DeleteMapping("/{userId}")
     public BaseResponse<String> deleteUser(
-            @PathVariable("userId") int id
+            @PathVariable("userId") @Min(1) int id
     ) {
         userService.deleteUser(id);
         return BaseResponse.<String>builder()
@@ -221,7 +221,10 @@ public class UserController {
         );
     }
 
-    @Operation(summary = "Advanced search query by specification", description = "Return list of user")
+    @Operation(
+            summary = "Advanced search query by specification",
+            description = "Send a request via this API to get user list by specification"
+    )
     @GetMapping(value = "/advanced-search-with-specification", produces = APPLICATION_JSON_VALUE)
     public BaseResponse<?> advancedSearchWithSpecification(
             Pageable pageable,

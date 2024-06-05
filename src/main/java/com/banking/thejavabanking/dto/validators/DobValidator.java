@@ -20,5 +20,8 @@ public class DobValidator implements ConstraintValidator<DobConstraint, LocalDat
     public boolean isValid(LocalDate value, ConstraintValidatorContext context) {
         if (Objects.isNull(value)) return false;
         return ChronoUnit.YEARS.between(value, LocalDate.now()) >= min;
+//        return ChronoUnit.YEARS.between(value.toInstant()
+//                                             .atZone(java.time.ZoneId.systemDefault())
+//                                             .toLocalDate(), LocalDate.now()) >= min;
     }
 }

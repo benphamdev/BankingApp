@@ -10,6 +10,7 @@ import com.banking.thejavabanking.dto.respones.IntrospectResponse;
 import com.banking.thejavabanking.services.impl.AuthenticationImpl;
 import com.nimbusds.jose.JOSEException;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,7 +36,7 @@ public class AuthenticationController {
     )
     @PostMapping("/login")
     BaseResponse<AuthenticationResponse> authenticate(
-            @RequestBody LoginRequestDTO request
+            @RequestBody @Valid LoginRequestDTO request
     ) {
         var res = authenticationService.login(request);
         return BaseResponse.<AuthenticationResponse>builder()
@@ -45,8 +46,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/introspect")
-    BaseResponse<IntrospectResponse> authenticate(
-            @RequestBody IntroSpectRequest request
+    BaseResponse<IntrospectResponse> introspect(
+            @RequestBody @Valid IntroSpectRequest request
     ) throws ParseException, JOSEException {
         var introspectResponse = authenticationService.introspect(request);
         return BaseResponse.<IntrospectResponse>builder()
@@ -56,7 +57,7 @@ public class AuthenticationController {
 
     @PostMapping("/logout")
     BaseResponse<Void> logout(
-            @RequestBody LogoutRequest logoutRequest
+            @RequestBody @Valid LogoutRequest logoutRequest
     ) throws ParseException, JOSEException {
         authenticationService.logout(logoutRequest);
         return BaseResponse.<Void>builder()
@@ -66,7 +67,7 @@ public class AuthenticationController {
 
     @PostMapping("/refresh")
     BaseResponse<AuthenticationResponse> refreshToken(
-            @RequestBody RefreshTokenRequest refreshToken
+            @RequestBody @Valid RefreshTokenRequest refreshToken
     ) throws ParseException, JOSEException {
         var res = authenticationService.refreshToken(refreshToken);
         return BaseResponse.<AuthenticationResponse>builder()

@@ -48,7 +48,5 @@ public interface IUserService {
             int pageNo, int pageSize, String sortBy, String address, String... search
     );
 
-    PageResponse<?> advancedSearchWithSpecification(
-            Pageable pageable, String[] users, String[] search
-    );
+    PageResponse<?> advancedSearchWithSpecification(Pageable pageable, String[] users, String[] search);
 }
