@@ -3,6 +3,7 @@ package com.banking.thejavabanking.controllers;
 import com.banking.thejavabanking.dto.respones.BaseResponse;
 import com.banking.thejavabanking.models.entity.Comment;
 import com.banking.thejavabanking.services.impl.CommentServiceImpl;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +17,9 @@ public class CommentController {
 
     @GetMapping("/create")
     public BaseResponse<Comment> createComment(
-            @RequestParam Long postId, @RequestParam String author, @RequestParam String content
+            @RequestParam @Min(1) Long postId,
+            @RequestParam String author,
+            @RequestParam String content
     ) {
         try {
             return BaseResponse.<Comment>builder()

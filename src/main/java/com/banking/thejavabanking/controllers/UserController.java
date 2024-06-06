@@ -229,7 +229,7 @@ public class UserController {
     public BaseResponse<?> advancedSearchWithSpecification(
             Pageable pageable,
             @RequestParam(required = false) String[] users,
-            @RequestParam(required = false) String[] search
+            @RequestParam(required = false) String[] address
     ) {
         log.info("Request advance search query by specification");
         return new BaseResponse<>(
@@ -238,7 +238,7 @@ public class UserController {
                 userService.advancedSearchWithSpecification(
                         pageable,
                         users,
-                        search
+                        address
                 )
         );
     }

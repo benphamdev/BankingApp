@@ -5,6 +5,7 @@ import com.banking.thejavabanking.dto.respones.BaseResponse;
 import com.banking.thejavabanking.models.entity.Tag;
 import com.banking.thejavabanking.services.impl.TagServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +28,7 @@ public class TagController {
 
     @Operation(summary = "Get tag by id", description = "Get tag by id")
     @GetMapping("/{id}")
-    public BaseResponse<Tag> getTagById(@PathVariable Integer id) {
+    public BaseResponse<Tag> getTagById(@PathVariable @Min(1) Integer id) {
         return BaseResponse.<Tag>builder()
                            .message("Tag with id: " + id)
                            .data(tagService.getTagById(id))
@@ -44,7 +45,7 @@ public class TagController {
     }
 
     @PutMapping("/{id}")
-    public BaseResponse<Tag> updateTag(@PathVariable Integer id, @RequestBody TagRequest tag) {
+    public BaseResponse<Tag> updateTag(@PathVariable @Min(1) Integer id, @RequestBody TagRequest tag) {
         tagService.updateTag(id, tag);
         return BaseResponse.<Tag>builder()
                            .message("Tag updated")
@@ -52,7 +53,7 @@ public class TagController {
     }
 
     @DeleteMapping("/{id}")
-    public BaseResponse<String> deleteTag(@PathVariable Integer id) {
+    public BaseResponse<String> deleteTag(@PathVariable @Min(1) Integer id) {
         tagService.deleteTag(id);
         return BaseResponse.<String>builder()
                            .message("Tag deleted")

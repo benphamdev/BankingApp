@@ -6,6 +6,7 @@ import com.banking.thejavabanking.dto.respones.PostResponse;
 import com.banking.thejavabanking.models.entity.Post;
 import com.banking.thejavabanking.services.impl.PostServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -53,7 +54,7 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public BaseResponse<Post> getPostById(@PathVariable Long id) {
+    public BaseResponse<Post> getPostById(@PathVariable @Min(1) Long id) {
         try {
             return BaseResponse.<Post>builder()
                                .message("get post success")
@@ -68,7 +69,7 @@ public class PostController {
     }
 
     @GetMapping("/{id}/like")
-    public BaseResponse<String> likePost(@PathVariable Long id) {
+    public BaseResponse<String> likePost(@PathVariable @Min(1) Long id) {
         try {
             postService.likePost(id);
             return BaseResponse.<String>builder()

@@ -7,6 +7,7 @@ import com.banking.thejavabanking.dto.respones.UserResponse;
 import com.banking.thejavabanking.exceptions.AppException;
 import com.banking.thejavabanking.exceptions.ErrorResponse;
 import com.banking.thejavabanking.mapper.UserMapper;
+import com.banking.thejavabanking.models.entity.Address;
 import com.banking.thejavabanking.models.entity.PhoneToken;
 import com.banking.thejavabanking.models.entity.Photo;
 import com.banking.thejavabanking.models.entity.User;
@@ -72,9 +73,31 @@ public class UserServiceImpl implements IUserService {
         if (userRepository.existsUserByPhoneNumber(userRequest.getPhoneNumber()))
             throw new AppException(ErrorResponse.PHONE_NUMBER_EXISTS);
 
-        User user = userMapper.toEntity(userRequest);
-        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+//        User user = userMapper.toEntity(userRequest);
+//        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 
+        User user = User.builder()
+                        .firstName(userRequest.getFirstName())
+                        .lastName(userRequest.getLastName())
+                        .dob(userRequest.getDob())
+                        .gender(userRequest.getGender())
+                        .phoneNumber(userRequest.getPhoneNumber())
+                        .email(userRequest.getEmail())
+                        .password(passwordEncoder.encode(userRequest.getPassword()))
+                        .build();
+
+        userRequest.getAddresses()
+                   .forEach(address -> user.saveAddress(
+                           Address.builder()
+                                  .apartmentNumber(address.getApartmentNumber())
+                                  .floor(address.getFloor())
+                                  .building(address.getBuilding())
+                                  .streetNumber(address.getStreetNumber())
+                                  .street(address.getStreet())
+                                  .city(address.getCity())
+                                  .country(address.getCountry())
+                                  .addressType(address.getAddressType())
+                                  .build()));
         // add role default to user
 
         userRepository.save(user);
@@ -304,11 +327,11 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public PageResponse<?> advancedSearchWithSpecification(Pageable pageable, String[] users, String[] search) {
+    public PageResponse<?> advancedSearchWithSpecification(Pageable pageable, String[] users, String[] address) {
         Page<User> userList = null;
-        if (users != null && search != null) {
+        if (users != null && address != null) {
             // TODO: Implement search by users and search
-
+            return searchRepository.getUsersJoinedAddress(pageable, users, address);
         } else if (users != null) {
             // TODO: Implement search by users => don't join with other table
 //            Specification<User> spec = UserSpec.hasFirstName("p");

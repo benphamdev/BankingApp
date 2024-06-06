@@ -57,7 +57,7 @@ public enum ErrorResponse {
     TAG_NOT_FOUND(1027, "Tag not found", HttpStatus.NOT_FOUND),
     TAG_ALREADY_EXISTS(1028, "Tag already exists", HttpStatus.BAD_REQUEST),
     SAVING_NOT_FOUND(1029, "Saving not found", HttpStatus.NOT_FOUND),
-    ;
+    INVALID_TOKEN(1030, "Token is required", HttpStatus.BAD_REQUEST);
 
     int code;
     String message;

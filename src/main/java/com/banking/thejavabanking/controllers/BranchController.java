@@ -7,6 +7,7 @@ import com.banking.thejavabanking.dto.respones.BranchResponse;
 import com.banking.thejavabanking.exceptions.AppException;
 import com.banking.thejavabanking.models.entity.BranchInfo;
 import com.banking.thejavabanking.services.impl.BranchInfoServiceImpl;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +40,7 @@ public class BranchController {
 
     @GetMapping("/{id}")
     public BaseResponse<BranchInfo> getBranchById(
-            @PathVariable int id
+            @PathVariable @Min(1) int id
     ) {
         Optional<?> branch = branchInfoService.getBranchInfoById(id);
 
@@ -55,7 +56,7 @@ public class BranchController {
 
     @GetMapping("/province")
     public BaseResponse<List<BranchInfo>> getBranchByProvinceId(
-            @RequestParam("provinceId") int provinceId
+            @RequestParam("provinceId") @Min(1) int provinceId
     ) {
 
         log.info("Getting branches by province id: {}", provinceId);
@@ -81,10 +82,11 @@ public class BranchController {
     //    PUT update existing branch
     @PutMapping("/update/{id}")
     public BaseResponse<Void> updateBranchInfo(
-            @PathVariable int id,
+            @PathVariable @Min(1) int id,
             @RequestBody BranchUpdateRequest branchInfo
     ) {
-        if (branchInfoService.getBranchInfoById(id).isEmpty())
+        if (branchInfoService.getBranchInfoById(id)
+                             .isEmpty())
             throw new AppException(BRANCH_NOT_FOUND);
         branchInfoService.updateBranchInfo(id, branchInfo);
         return BaseResponse.<Void>builder()
@@ -94,9 +96,10 @@ public class BranchController {
 
     @DeleteMapping("/delete/{id}")
     public BaseResponse<Void> deleteBranch(
-            @PathVariable int id
+            @PathVariable @Min(1) int id
     ) {
-        if (branchInfoService.getBranchInfoById(id).isEmpty())
+        if (branchInfoService.getBranchInfoById(id)
+                             .isEmpty())
             throw new AppException(BRANCH_NOT_FOUND);
 
         branchInfoService.deleteBranchInfo(id);

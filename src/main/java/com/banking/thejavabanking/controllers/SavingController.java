@@ -4,6 +4,7 @@ import com.banking.thejavabanking.dto.requests.SavingRequest;
 import com.banking.thejavabanking.dto.respones.BaseResponse;
 import com.banking.thejavabanking.models.entity.Saving;
 import com.banking.thejavabanking.services.impl.SavingServiceImpl;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +29,7 @@ public class SavingController {
 
     @GetMapping("/cancel/{savingId}")
     public BaseResponse<Void> cancelSavingAccount(
-            @PathVariable Integer savingId
+            @PathVariable @Min(1) Integer savingId
     ) {
         savingService.cancelSaving(savingId);
         return BaseResponse.<Void>builder()
@@ -43,7 +44,7 @@ public class SavingController {
 
     @GetMapping("/{userId}")
     public BaseResponse<Saving> getSavingByUserId(
-            @PathVariable Integer userId
+            @PathVariable @Min(1) Integer userId
     ) {
         return BaseResponse.<Saving>builder()
                            .message("Saving account retrieved successfully")

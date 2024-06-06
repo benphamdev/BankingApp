@@ -8,6 +8,7 @@ import com.banking.thejavabanking.services.IAccountService;
 import com.banking.thejavabanking.services.ILoanDisbursementService;
 import com.banking.thejavabanking.services.impl.AccountServiceImpl;
 import com.banking.thejavabanking.services.impl.LoanDetailServiceImpl;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
@@ -42,7 +43,8 @@ public class LoanDisbursementController {
             return new BaseResponse<>("Loan detail not found");
         }
 
-        var userId = loanDetail.getUser().getId();
+        var userId = loanDetail.getUser()
+                               .getId();
 
         Optional<Account> account = accountService.getAccountByUserId(userId);
 
@@ -51,7 +53,8 @@ public class LoanDisbursementController {
         }
         iAccountService.creditAccount(
                 CreditDebitRequest.builder()
-                                  .accountNumber(account.get().getAccountNumber())
+                                  .accountNumber(account.get()
+                                                        .getAccountNumber())
                                   .amount(BigDecimal.valueOf(loanDetail.getLoanInfo()
                                                                        .getLoanAmount()))
                                   .build()
@@ -64,11 +67,12 @@ public class LoanDisbursementController {
 
     @GetMapping("/{id}")
     public ResponseEntity<LoanDisbursement> getLoanDisbursementById(
-            @PathVariable Integer id
+            @PathVariable @Min(1) Integer id
     ) {
         return loanDisbursementService.getLoanDisbursementById(id)
                                       .map(ResponseEntity::ok)
-                                      .orElse(ResponseEntity.notFound().build());
+                                      .orElse(ResponseEntity.notFound()
+                                                            .build());
     }
 
     @GetMapping
@@ -79,7 +83,7 @@ public class LoanDisbursementController {
 
     @PutMapping("/{id}")
     public ResponseEntity<LoanDisbursement> updateLoanDisbursement(
-            @PathVariable Integer id,
+            @PathVariable @Min(1) Integer id,
             @RequestBody LoanDisbursement loanDisbursement
     ) {
         LoanDisbursement updatedLoanDisbursement =
@@ -89,7 +93,7 @@ public class LoanDisbursementController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLoanDisbursementById(
-            @PathVariable Integer id
+            @PathVariable @Min(1) Integer id
     ) {
         loanDisbursementService.deleteLoanDisbursementById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

@@ -29,7 +29,8 @@ public class GlobalExceptionHandler {
 //                ErrorResponse.UNCATEGORIZED.getMessage()
                 e.getMessage()
         );
-        return ResponseEntity.badRequest().body(response);
+        return ResponseEntity.badRequest()
+                             .body(response);
     }
 
     @ExceptionHandler(value = AppException.class)
@@ -41,7 +42,8 @@ public class GlobalExceptionHandler {
                 errorResponse.getMessage()
         );
 
-        return ResponseEntity.status(errorResponse.getHttpStatusCode()).body(response);
+        return ResponseEntity.status(errorResponse.getHttpStatusCode())
+                             .body(response);
     }
 
     @ExceptionHandler(value = AccessDeniedException.class)
@@ -51,14 +53,16 @@ public class GlobalExceptionHandler {
                 ErrorResponse.UNAUTHORIZED.getMessage()
         );
 
-        return ResponseEntity.status(ErrorResponse.UNAUTHORIZED.getHttpStatusCode()).body(response);
+        return ResponseEntity.status(ErrorResponse.UNAUTHORIZED.getHttpStatusCode())
+                             .body(response);
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     ResponseEntity<BaseResponse> handleMethodArgumentNotValidException(
             MethodArgumentNotValidException e
     ) {
-        String enumsKey = e.getFieldError().getDefaultMessage();
+        String enumsKey = e.getFieldError()
+                           .getDefaultMessage();
 
         ErrorResponse errorCode = ErrorResponse.valueOf(enumsKey);
         Map<String, Object> attributes = null;
@@ -70,9 +74,13 @@ public class GlobalExceptionHandler {
                     || errorCode == ErrorResponse.INVALID_PHONE_NUMBER
                     || errorCode == ErrorResponse.INVALID_ACCOUNT_NUMBER
             ) {
-                var constraint = e.getBindingResult().getAllErrors().get(0).unwrap(
-                        ConstraintViolation.class);
-                attributes = constraint.getConstraintDescriptor().getAttributes();
+                var constraint = e.getBindingResult()
+                                  .getAllErrors()
+                                  .get(0)
+                                  .unwrap(
+                                          ConstraintViolation.class);
+                attributes = constraint.getConstraintDescriptor()
+                                       .getAttributes();
                 log.info("Attributes : {}", attributes);
             }
         } catch (Exception ex) {
@@ -86,7 +94,8 @@ public class GlobalExceptionHandler {
                                        ? mapAttribute(errorCode.getMessage(), attributes)
                                        : errorCode.getMessage());
 
-        return ResponseEntity.badRequest().body(apiResponse);
+        return ResponseEntity.badRequest()
+                             .body(apiResponse);
     }
 
     // CHUA BAT EXCEPTION ENUMS PROVINCE
@@ -96,7 +105,8 @@ public class GlobalExceptionHandler {
         Throwable cause = ex.getCause();
         if (cause instanceof InvalidFormatException) {
             InvalidFormatException ife = (InvalidFormatException) cause;
-            if (ife.getTargetType().isEnum()) {
+            if (ife.getTargetType()
+                   .isEnum()) {
                 return "Invalid value for enum " + ife.getTargetType()
                                                       .getSimpleName() + ": " + ife.getValue();
             }
@@ -105,6 +115,10 @@ public class GlobalExceptionHandler {
     }
 
     private String mapAttribute(String message, Map<String, Object> attributes) {
-        return message.replace("{" + MIN_KEY + "}", attributes.get(MIN_KEY).toString());
+        return message.replace(
+                "{" + MIN_KEY + "}",
+                attributes.get(MIN_KEY)
+                          .toString()
+        );
     }
 }

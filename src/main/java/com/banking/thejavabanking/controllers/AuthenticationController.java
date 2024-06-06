@@ -46,7 +46,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/introspect")
-    BaseResponse<IntrospectResponse> introspect(
+    BaseResponse<IntrospectResponse> authenticate(
             @RequestBody @Valid IntroSpectRequest request
     ) throws ParseException, JOSEException {
         var introspectResponse = authenticationService.introspect(request);

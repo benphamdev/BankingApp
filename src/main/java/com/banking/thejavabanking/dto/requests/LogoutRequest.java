@@ -7,6 +7,6 @@ import java.io.Serializable;
 
 @Getter
 public class LogoutRequest implements Serializable {
-    @NotBlank(message = "Token is required")
+    @NotBlank(message = "INVALID_TOKEN")
     private String token;
 }

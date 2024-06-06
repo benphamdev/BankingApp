@@ -11,6 +11,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -36,9 +37,6 @@ public class User extends BaseEntity implements Serializable {
     @EnumValue(name = "gender", enumClass = Enums.Gender.class)
     @Column(name = "gender")
     String gender;
-
-    @Column(name = "address")
-    String address;
 
     @Column(name = "email")
     String email;
@@ -93,4 +91,26 @@ public class User extends BaseEntity implements Serializable {
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     Set<Role> roles;
+
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    private Set<Address> addresses = new HashSet<>();
+
+    public void saveAddress(Address address) {
+        if (address != null) {
+            if (addresses == null) {
+                addresses = new HashSet<>();
+            }
+            addresses.add(address);
+            address.setUser(this);
+        }
+    }
+
+    @JsonIgnore // Stop infinite loop
+    public Set<Address> getAddresses() {
+        return addresses;
+    }
 }

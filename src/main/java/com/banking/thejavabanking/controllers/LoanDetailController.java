@@ -6,6 +6,7 @@ import com.banking.thejavabanking.dto.respones.InterestCalculationResponse;
 import com.banking.thejavabanking.models.Enums;
 import com.banking.thejavabanking.models.entity.LoanDetail;
 import com.banking.thejavabanking.services.impl.LoanDetailServiceImpl;
+import jakarta.validation.constraints.Min;
 import jakarta.websocket.server.PathParam;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -68,7 +69,7 @@ public class LoanDetailController {
 
     @DeleteMapping("/{id}")
     public BaseResponse<Void> deleteLoanDetailById(
-            @PathVariable int id
+            @PathVariable @Min(1) int id
     ) {
         loanDetailService.deleteLoanDetailById(id);
         return BaseResponse.<Void>builder()
@@ -79,7 +80,7 @@ public class LoanDetailController {
     // calculate interest for a given loan detail
     @GetMapping("interest/{id}")
     public BaseResponse<String> interestCalculator(
-            @PathVariable int id,
+            @PathVariable @Min(1) int id,
             @PathParam("type") Enums.InterestType type
     ) {
         double interest = loanDetailService.calculateInterest(id, type);
@@ -91,7 +92,7 @@ public class LoanDetailController {
 
     @PutMapping("/{id}/approve")
     public BaseResponse<Void> approveLoanDetail(
-            @PathVariable int id
+            @PathVariable @Min(1) int id
     ) {
         LoanDetail loanDetail = loanDetailService.getLoanDetailById(id);
         loanDetailService.updateLoanDetail(loanDetail, Enums.LoanStatus.APPROVED);
@@ -102,7 +103,7 @@ public class LoanDetailController {
 
     @PutMapping("/{id}/deny")
     public BaseResponse<Void> denyLoanDetail(
-            @PathVariable int id
+            @PathVariable @Min(1) int id
     ) {
         LoanDetail loanDetail = loanDetailService.getLoanDetailById(id);
         loanDetailService.updateLoanDetail(loanDetail, Enums.LoanStatus.REJECTED);
@@ -113,7 +114,7 @@ public class LoanDetailController {
 
     @PutMapping("/{id}/status")
     public BaseResponse<Void> updateLoanDetailStatus(
-            @PathVariable int id,
+            @PathVariable @Min(1) int id,
             @PathParam("status") Enums.LoanStatus status,
             @PathParam("paymentStatus") Enums.LoanPaymentStatus paymentStatus
     ) {
@@ -127,7 +128,7 @@ public class LoanDetailController {
     // calculate total amount to pay monthly = base amount + interest amount (simple interest)
     @GetMapping("/interest/final/{id}")
     public BaseResponse<InterestCalculationResponse> finalMonthlyAmountIncludingInterest(
-            @PathVariable int id
+            @PathVariable @Min(1) int id
     ) {
         return BaseResponse.<InterestCalculationResponse>builder()
                            .message("Interest calculated successfully")
@@ -137,7 +138,7 @@ public class LoanDetailController {
 
     @GetMapping("/interest/decrease/{id}")
     public BaseResponse<List<InterestCalculationResponse>> decreaseInterestCalculation(
-            @PathVariable int id
+            @PathVariable @Min(1) int id
     ) {
         return BaseResponse.<List<InterestCalculationResponse>>builder()
                            .message("Interest calculated successfully")

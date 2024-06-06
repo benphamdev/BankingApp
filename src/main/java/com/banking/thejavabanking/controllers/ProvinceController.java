@@ -6,6 +6,7 @@ import com.banking.thejavabanking.exceptions.AppException;
 import com.banking.thejavabanking.models.entity.Province;
 import com.banking.thejavabanking.services.impl.ProvinceServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,7 +59,7 @@ public class ProvinceController {
 
     @GetMapping("/{id}")
     public BaseResponse<Province> getProvinceById(
-            @PathVariable int id
+            @PathVariable @Min(1) int id
     ) {
         Optional<Province> province = provinceService.getProvinceById(id);
         if (province.isEmpty())
@@ -71,7 +72,7 @@ public class ProvinceController {
     // it is not necessary
     @PutMapping("/{id}")
     public BaseResponse<Void> updateProvince(
-            @PathVariable int id,
+            @PathVariable @Min(1) int id,
             @RequestBody Province province
     ) {
         province.setId(id);
@@ -83,7 +84,7 @@ public class ProvinceController {
 
     @DeleteMapping("/{id}")
     public BaseResponse<Void> deleteProvince(
-            @PathVariable int id
+            @PathVariable @Min(1) int id
     ) {
         provinceService.deleteProvince(id);
         return BaseResponse.<Void>builder()

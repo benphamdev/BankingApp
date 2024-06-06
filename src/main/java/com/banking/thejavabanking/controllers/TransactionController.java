@@ -3,6 +3,7 @@ package com.banking.thejavabanking.controllers;
 import com.banking.thejavabanking.dto.respones.BaseResponse;
 import com.banking.thejavabanking.services.impl.TransactionServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.constraints.Min;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -70,7 +71,7 @@ public class TransactionController {
             description = "Send a request via this API to get transaction list by account ID"
     )
     @GetMapping("/{accountID}")
-    public BaseResponse<?> getTransactionWithAccountID(@PathVariable Integer accountID) {
+    public BaseResponse<?> getTransactionWithAccountID(@PathVariable @Min(1) Integer accountID) {
         return BaseResponse.builder()
                            .message("Get transactions with account ID successfully")
                            .data(transactionService.getTransactionWithAccountID(accountID))

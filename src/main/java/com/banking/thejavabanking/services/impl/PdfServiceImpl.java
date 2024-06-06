@@ -72,7 +72,8 @@ public class PdfServiceImpl implements IPdfService {
 
             Optional<Account> account = accountRepository.getAccountByAccountNumber(
                     exportTransactionToPdfRequest.getAccountNumber());
-            User user = account.get().getUser();
+            User user = account.get()
+                               .getUser();
 
             String customerName = user.getFirstName() + " " + user.getLastName();
 
@@ -80,7 +81,7 @@ public class PdfServiceImpl implements IPdfService {
             customerNameCell.setBorder(0);
 
             PdfPCell customerAddressCell = new PdfPCell(
-                    new Phrase("Customer Address: " + user.getAddress()));
+                    new Phrase("Customer Address: " + user.getAddresses()));
 
             customerAddressCell.setBorder(0);
 
@@ -113,10 +114,14 @@ public class PdfServiceImpl implements IPdfService {
 
             List<UserTransaction> transactions = exportTransactionToPdfRequest.getTransactions();
             transactions.forEach(transaction -> {
-                transactionTable.addCell(new Phrase(transaction.getCreatedAt().toString()));
-                transactionTable.addCell(new Phrase(transaction.getTransactionType().toString()));
-                transactionTable.addCell(new Phrase(transaction.getAmount().toString()));
-                transactionTable.addCell(new Phrase(transaction.getStatus().toString()));
+                transactionTable.addCell(new Phrase(transaction.getCreatedAt()
+                                                               .toString()));
+                transactionTable.addCell(new Phrase(transaction.getTransactionType()
+                                                               .toString()));
+                transactionTable.addCell(new Phrase(transaction.getAmount()
+                                                               .toString()));
+                transactionTable.addCell(new Phrase(transaction.getStatus()
+                                                               .toString()));
             });
 
             document.add(bankInfoTable);
