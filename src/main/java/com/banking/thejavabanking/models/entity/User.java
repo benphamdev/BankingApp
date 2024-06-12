@@ -14,14 +14,20 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @Builder
-@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 @Entity
-@Table(name = "tbl_user")
+@Table(
+        name = "tbl_user",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"email"}),
+                @UniqueConstraint(columnNames = {"phone_number"})
+        }
+)
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class User extends BaseEntity implements Serializable {
     @Column(name = "first_name")
     String firstName;

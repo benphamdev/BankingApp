@@ -4,6 +4,7 @@ import com.banking.thejavabanking.dto.respones.BaseResponse;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import jakarta.validation.ConstraintViolation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -24,6 +25,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({Exception.class})
     ResponseEntity<BaseResponse> handleRuntimeException(RuntimeException e) {
+        log.error("Exception : ", e);
         BaseResponse response = new BaseResponse(
                 ErrorResponse.UNCATEGORIZED.getCode(),
 //                ErrorResponse.UNCATEGORIZED.getMessage()
@@ -31,6 +33,29 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.badRequest()
                              .body(response);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<?> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
+        String errorMessage = e.getRootCause()
+                               .getMessage();
+
+        if (errorMessage.contains("Duplicate entry")) {
+            int startIndex = errorMessage.indexOf("'") + 1;
+            int endIndex = errorMessage.indexOf("'", startIndex);
+            String duplicateValue = errorMessage.substring(startIndex, endIndex);
+            return ResponseEntity.badRequest()
+                                 .body(new BaseResponse<>(
+                                         HttpStatus.BAD_REQUEST.value(),
+                                         "DUPLICATE",
+                                         duplicateValue.contains("@") ?
+                                                 String.format("DUPLICATE_EMAIL_%s", duplicateValue.toUpperCase())
+                                                 : String.format("DUPLICATE_PHONE_NUMBER_%s", duplicateValue.toUpperCase())
+                                 ));
+        }
+        return ResponseEntity.badRequest()
+                             .body(new BaseResponse<>("DUPLICATE"));
+
     }
 
     @ExceptionHandler(value = AppException.class)

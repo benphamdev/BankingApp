@@ -67,12 +67,6 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public long createUser(UserCreationRequest userRequest) {
-        if (userRepository.existsByEmail(userRequest.getEmail()))
-            throw new AppException(ErrorResponse.EMAIL_EXISTS);
-
-        if (userRepository.existsUserByPhoneNumber(userRequest.getPhoneNumber()))
-            throw new AppException(ErrorResponse.PHONE_NUMBER_EXISTS);
-
 //        User user = userMapper.toEntity(userRequest);
 //        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 

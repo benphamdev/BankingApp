@@ -51,6 +51,7 @@ public class UserController {
         );
         long userId = userService.createUser(userRequest);
         return new BaseResponse<>(HttpStatus.CREATED.value(), "Account created successfully", userId);
+
     }
 
     @PutMapping("/{userId}")
