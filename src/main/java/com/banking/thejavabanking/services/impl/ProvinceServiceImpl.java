@@ -2,7 +2,7 @@ package com.banking.thejavabanking.services.impl;
 
 import com.banking.thejavabanking.dto.respones.ProvinceResponse;
 import com.banking.thejavabanking.exceptions.AppException;
-import com.banking.thejavabanking.exceptions.ErrorResponse;
+import com.banking.thejavabanking.exceptions.EnumsErrorResponse;
 import com.banking.thejavabanking.mapper.ProvinceMapper;
 import com.banking.thejavabanking.models.Enums;
 import com.banking.thejavabanking.models.entity.Province;
@@ -23,8 +23,11 @@ public class ProvinceServiceImpl implements IProvinceService {
 
     @Override
     public List<ProvinceResponse> getAllProvinces() {
-        return provinceRepository.findAll().stream().map(provinceMapper::toProvinceResponse).collect(
-                Collectors.toList());
+        return provinceRepository.findAll()
+                                 .stream()
+                                 .map(provinceMapper::toProvinceResponse)
+                                 .collect(
+                                         Collectors.toList());
     }
 
     @Override
@@ -51,7 +54,7 @@ public class ProvinceServiceImpl implements IProvinceService {
     @Override
     public void deleteProvince(Integer id) {
         if (!provinceRepository.existsById(id))
-            throw new AppException(ErrorResponse.PROVINCE_NOT_FOUND);
+            throw new AppException(EnumsErrorResponse.PROVINCE_NOT_FOUND);
         provinceRepository.deleteById(id);
     }
 }

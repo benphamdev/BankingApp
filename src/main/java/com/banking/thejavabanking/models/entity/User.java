@@ -1,11 +1,9 @@
 package com.banking.thejavabanking.models.entity;
 
-import com.banking.thejavabanking.dto.validators.EnumValue;
 import com.banking.thejavabanking.models.Enums;
+import com.banking.thejavabanking.models.abstractions.DateTrackingBase;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -28,7 +26,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class User extends BaseEntity implements Serializable {
+public class User extends DateTrackingBase<Integer> implements Serializable {
     @Column(name = "first_name")
     String firstName;
 
@@ -37,12 +35,11 @@ public class User extends BaseEntity implements Serializable {
 
     @Column(name = "dob")
     LocalDate dob; //don't change in sql
-//    Date dob;
-
-    @NotNull
-    @EnumValue(name = "gender", enumClass = Enums.Gender.class)
+    //    Date dob;
+    
+    @Enumerated(EnumType.STRING)
     @Column(name = "gender")
-    String gender;
+    Enums.Gender gender;
 
     @Column(name = "email")
     String email;
@@ -50,10 +47,6 @@ public class User extends BaseEntity implements Serializable {
     @Column(
             name = "phone_number",
             unique = true
-    )
-    @Size(
-            min = 10,
-            max = 10
     )
     String phoneNumber;
 

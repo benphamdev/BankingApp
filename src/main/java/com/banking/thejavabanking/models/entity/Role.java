@@ -10,13 +10,13 @@ import lombok.experimental.FieldDefaults;
 import java.io.Serializable;
 import java.util.Set;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @Builder
-@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 @Table(name = "tbl_role")
 public class Role implements Serializable {
     @Id

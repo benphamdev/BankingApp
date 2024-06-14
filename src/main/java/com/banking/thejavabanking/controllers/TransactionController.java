@@ -1,6 +1,6 @@
 package com.banking.thejavabanking.controllers;
 
-import com.banking.thejavabanking.dto.respones.BaseResponse;
+import com.banking.thejavabanking.dto.respones.shared.BaseResponse;
 import com.banking.thejavabanking.services.impl.TransactionServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.Min;

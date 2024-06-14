@@ -1,5 +1,6 @@
 package com.banking.thejavabanking.models.entity;
 
+import com.banking.thejavabanking.models.abstractions.DateTrackingBase;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,15 +10,15 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @Builder
-@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 @Table(name = "tbl_saving")
-public class Saving extends BaseEntity implements Serializable {
+public class Saving extends DateTrackingBase<Integer> implements Serializable {
     @Column(name = "maturation_date")
     LocalDateTime maturationDate;
 

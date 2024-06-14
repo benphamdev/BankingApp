@@ -1,6 +1,7 @@
 package com.banking.thejavabanking.models.entity;
 
 import com.banking.thejavabanking.models.Enums;
+import com.banking.thejavabanking.models.abstractions.DateTrackingBase;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,15 +12,15 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @Builder
-@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "tbl_account")
-public class Account extends BaseEntity implements Serializable {
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
+public class Account extends DateTrackingBase<Integer> implements Serializable {
     @Column(name = "account_number")
     String accountNumber;
 
@@ -56,5 +57,4 @@ public class Account extends BaseEntity implements Serializable {
             userTransaction.setAccount(this);
         }
     }
-
 }

@@ -1,6 +1,6 @@
 package com.banking.thejavabanking.repositories.search;
 
-import com.banking.thejavabanking.dto.respones.PageResponse;
+import com.banking.thejavabanking.dto.respones.shared.PageResponse;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;

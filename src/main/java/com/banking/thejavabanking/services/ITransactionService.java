@@ -1,6 +1,6 @@
 package com.banking.thejavabanking.services;
 
-import com.banking.thejavabanking.dto.respones.PageResponse;
+import com.banking.thejavabanking.dto.respones.shared.PageResponse;
 import com.banking.thejavabanking.models.entity.UserTransaction;
 
 import java.time.LocalDate;

@@ -1,5 +1,6 @@
 package com.banking.thejavabanking.models.entity;
 
+import com.banking.thejavabanking.models.abstractions.DateTrackingBase;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,7 +13,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "tbl_address")
-public class Address extends BaseEntity implements Serializable {
+public class Address extends DateTrackingBase<Integer> implements Serializable {
     @Column(name = "apartment_number")
     private String apartmentNumber;
 

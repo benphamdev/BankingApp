@@ -1,8 +1,7 @@
 package com.banking.thejavabanking.configuration;
 
-import com.banking.thejavabanking.exceptions.ErrorResponse;
+import com.banking.thejavabanking.exceptions.EnumsErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +18,8 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(
             HttpServletRequest request, HttpServletResponse response,
             AuthenticationException authException
-    ) throws IOException, ServletException {
-        ErrorResponse errorCode = ErrorResponse.UNAUTHENTICATED;
+    ) throws IOException {
+        EnumsErrorResponse errorCode = EnumsErrorResponse.UNAUTHENTICATED;
 //
 //        response.setStatus(errorCode.getHttpStatusCode()
 //                                    .value());

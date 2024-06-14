@@ -1,8 +1,8 @@
 package com.banking.thejavabanking.services;
 
 import com.banking.thejavabanking.dto.requests.PostCreationRequest;
-import com.banking.thejavabanking.dto.respones.PageResponse;
 import com.banking.thejavabanking.dto.respones.PostResponse;
+import com.banking.thejavabanking.dto.respones.shared.PageResponse;
 import com.banking.thejavabanking.models.entity.Post;
 import org.springframework.web.multipart.MultipartFile;
 

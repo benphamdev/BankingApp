@@ -1,6 +1,7 @@
 package com.banking.thejavabanking.models.entity;
 
 import com.banking.thejavabanking.models.Enums.Provinces;
+import com.banking.thejavabanking.models.abstractions.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,15 +11,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @Builder
-@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 @Table(name = "tbl_province")
-public class Province extends BaseEntity implements Serializable {
+public class Province extends BaseEntity<Integer> implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(
             length = 20,

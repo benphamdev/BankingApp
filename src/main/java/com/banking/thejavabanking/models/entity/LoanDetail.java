@@ -2,6 +2,7 @@ package com.banking.thejavabanking.models.entity;
 
 import com.banking.thejavabanking.models.Enums.LoanPaymentStatus;
 import com.banking.thejavabanking.models.Enums.LoanStatus;
+import com.banking.thejavabanking.models.abstractions.BaseAuditEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -10,15 +11,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 @Builder
-@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 @Table(name = "tbl_loan_detail")
-public class LoanDetail extends BaseEntity implements Serializable {
+public class LoanDetail extends BaseAuditEntity<Integer> implements Serializable {
     @Column(name = "loan_status")
     @Enumerated(EnumType.STRING)
     @Builder.Default

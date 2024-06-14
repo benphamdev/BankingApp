@@ -4,7 +4,7 @@ import com.banking.thejavabanking.dto.requests.*;
 import com.banking.thejavabanking.dto.respones.AccountInfoResponse;
 import com.banking.thejavabanking.dto.respones.UserResponse;
 import com.banking.thejavabanking.exceptions.AppException;
-import com.banking.thejavabanking.exceptions.ErrorResponse;
+import com.banking.thejavabanking.exceptions.EnumsErrorResponse;
 import com.banking.thejavabanking.mapper.AccountMapper;
 import com.banking.thejavabanking.models.Enums;
 import com.banking.thejavabanking.models.entity.Account;
@@ -56,14 +56,14 @@ public class AccountServiceImpl implements IAccountService {
     @Override
     public Integer createAccount(AccountCreationRequest accountRequest) {
         User user = userRepository.findUserById(accountRequest.getUserId())
-                                  .orElseThrow(() -> new AppException(ErrorResponse.USER_NOT_FOUND));
+                                  .orElseThrow(() -> new AppException(EnumsErrorResponse.USER_NOT_FOUND));
 
         BranchInfo branchInfo = branchInfoRepository.findById(accountRequest.getBranchInfoId())
                                                     .orElseThrow(() -> new AppException(
-                                                            ErrorResponse.BRANCH_NOT_FOUND));
+                                                            EnumsErrorResponse.BRANCH_NOT_FOUND));
 
         if (user.getAccount() != null)
-            throw new AppException(ErrorResponse.ACCOUNT_EXISTS);
+            throw new AppException(EnumsErrorResponse.ACCOUNT_EXISTS);
 
         Account account = Account.builder()
                                  .accountNumber(AccountUtils.generateAccountNumber())
@@ -108,7 +108,7 @@ public class AccountServiceImpl implements IAccountService {
     @Override
     public AccountInfoResponse getAccountInforByUserId(Integer userId) {
         User user = userRepository.findUserById(userId)
-                                  .orElseThrow(() -> new AppException(ErrorResponse.USER_NOT_FOUND));
+                                  .orElseThrow(() -> new AppException(EnumsErrorResponse.USER_NOT_FOUND));
 
         Account account = user.getAccount();
         return accountMapper.toAccountInfoResponse(account);
@@ -117,7 +117,7 @@ public class AccountServiceImpl implements IAccountService {
     @Override
     public Optional<Account> getAccountByUserId(Integer userId) {
         User user = userRepository.findUserById(userId)
-                                  .orElseThrow(() -> new AppException(ErrorResponse.USER_NOT_FOUND));
+                                  .orElseThrow(() -> new AppException(EnumsErrorResponse.USER_NOT_FOUND));
 
         Account account = user.getAccount();
         return Optional.ofNullable(account);
@@ -130,9 +130,10 @@ public class AccountServiceImpl implements IAccountService {
         UserResponse user = userService.getUserReponeseByID(account.getUser()
                                                                    .getId());
 
-        log.info("Account name: {}",
-                 account.getUser()
-                        .getId()
+        log.info(
+                "Account name: {}",
+                account.getUser()
+                       .getId()
         );
 
         return accountMapper.toAccountInfoResponse(account);
@@ -142,9 +143,10 @@ public class AccountServiceImpl implements IAccountService {
     public String nameEnquiry(EnquiryRequest enquiryRequest) {
         Account account = getAccountByAccountNumber(enquiryRequest.getAccountNumber());
 
-        log.info("Account name: {}",
-                 account.getUser()
-                        .getId()
+        log.info(
+                "Account name: {}",
+                account.getUser()
+                       .getId()
         );
         User user = account.getUser();
         return user.getFirstName();
@@ -195,7 +197,7 @@ public class AccountServiceImpl implements IAccountService {
 
         if (account.getBalance()
                    .compareTo(amount) < 0)
-            throw new AppException(ErrorResponse.INSUFFICIENT_BALANCE);
+            throw new AppException(EnumsErrorResponse.INSUFFICIENT_BALANCE);
 
         account.setBalance(account.getBalance()
                                   .subtract(amount));
@@ -240,7 +242,7 @@ public class AccountServiceImpl implements IAccountService {
 
         if (fromAccount.getBalance()
                        .compareTo(amount) < 0) {
-            throw new AppException(ErrorResponse.INSUFFICIENT_BALANCE);
+            throw new AppException(EnumsErrorResponse.INSUFFICIENT_BALANCE);
         }
 
         String fromAccountName = fromUser.getFirstName(),
@@ -291,7 +293,7 @@ public class AccountServiceImpl implements IAccountService {
 
     public Account getAccountByAccountNumber(String accountNumber) {
         return accountRepository.getAccountByAccountNumber(accountNumber)
-                                .orElseThrow(() -> new AppException(ErrorResponse.ACCOUNT_NOT_FOUND));
+                                .orElseThrow(() -> new AppException(EnumsErrorResponse.ACCOUNT_NOT_FOUND));
     }
 
     public void updateAccount(Account account) {

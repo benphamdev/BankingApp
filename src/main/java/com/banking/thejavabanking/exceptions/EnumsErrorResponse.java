@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatusCode;
 @Getter
 @AllArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public enum ErrorResponse {
+public enum EnumsErrorResponse {
     UNCATEGORIZED(9999, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
     INVALID_KEY(1001, "Invalid key", HttpStatus.BAD_REQUEST),
     USER_EXISTS(1002, "User already exists", HttpStatus.BAD_REQUEST),

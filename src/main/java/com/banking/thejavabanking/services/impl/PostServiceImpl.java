@@ -2,10 +2,10 @@ package com.banking.thejavabanking.services.impl;
 
 import com.banking.thejavabanking.dto.requests.NotificationMessageDTO;
 import com.banking.thejavabanking.dto.requests.PostCreationRequest;
-import com.banking.thejavabanking.dto.respones.PageResponse;
 import com.banking.thejavabanking.dto.respones.PostResponse;
+import com.banking.thejavabanking.dto.respones.shared.PageResponse;
 import com.banking.thejavabanking.exceptions.AppException;
-import com.banking.thejavabanking.exceptions.ErrorResponse;
+import com.banking.thejavabanking.exceptions.EnumsErrorResponse;
 import com.banking.thejavabanking.mapper.PostMapper;
 import com.banking.thejavabanking.models.entity.Photo;
 import com.banking.thejavabanking.models.entity.Post;
@@ -35,7 +35,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.banking.thejavabanking.exceptions.ErrorResponse.POST_NOT_FOUND;
+import static com.banking.thejavabanking.exceptions.EnumsErrorResponse.POST_NOT_FOUND;
 import static com.banking.thejavabanking.utils.AppConst.SORT_BY;
 import static lombok.AccessLevel.PRIVATE;
 
@@ -59,7 +59,7 @@ public class PostServiceImpl implements IPostService {
             BufferedImage bi = ImageIO.read(multipartFile.getInputStream());
 
             if (bi == null) {
-                throw new AppException(ErrorResponse.INVALID_IMAGE);
+                throw new AppException(EnumsErrorResponse.INVALID_IMAGE);
             }
 
             Map result = photoService.upload(multipartFile);
@@ -82,25 +82,29 @@ public class PostServiceImpl implements IPostService {
                          .build();
 
         // send notification to all users
-        phoneTokenRepository.findAll().forEach(phoneToken -> {
-            firebaseMessagingService.sendNotification(NotificationMessageDTO.builder()
-                                                                            .recipientToken(phoneToken.getToken())
-                                                                            .title("New Post")
-                                                                            .body("New post has been created")
-                                                                            .image(photo.getUrl())
-                                                                            .data(Map.of(
-                                                                                    "postId", "hello",
-                                                                                    "name", post.getName()
-                                                                            ))
-                                                                            .build());
-        });
+        phoneTokenRepository.findAll()
+                            .forEach(phoneToken -> {
+                                firebaseMessagingService.sendNotification(NotificationMessageDTO.builder()
+                                                                                                .recipientToken(phoneToken.getToken())
+                                                                                                .title("New Post")
+                                                                                                .body("New post has been created")
+                                                                                                .image(photo.getUrl())
+                                                                                                .data(Map.of(
+                                                                                                        "postId", "hello",
+                                                                                                        "name", post.getName()
+                                                                                                ))
+                                                                                                .build());
+                            });
 
         return postRepository.save(post1);
     }
 
     @Override
     public List<PostResponse> getPosts() {
-        return postRepository.findAll().stream().map(postMapper::toPostResponse).toList();
+        return postRepository.findAll()
+                             .stream()
+                             .map(postMapper::toPostResponse)
+                             .toList();
     }
 
     @Override
@@ -144,7 +148,9 @@ public class PostServiceImpl implements IPostService {
                            .page(pagePosts.getNumber())
                            .size(pagePosts.getSize())
                            .total((int) pagePosts.getTotalPages())
-                           .items(pagePosts.stream().map(postMapper::toPostResponse).toList())
+                           .items(pagePosts.stream()
+                                           .map(postMapper::toPostResponse)
+                                           .toList())
                            .build();
     }
 
@@ -165,7 +171,9 @@ public class PostServiceImpl implements IPostService {
                            .page(pagePost.getNumber())
                            .size(pagePost.getSize())
                            .total((int) pagePost.getTotalElements())
-                           .items(pagePost.stream().map(postMapper::toPostResponse).toList())
+                           .items(pagePost.stream()
+                                          .map(postMapper::toPostResponse)
+                                          .toList())
                            .build();
     }
 
@@ -191,7 +199,9 @@ public class PostServiceImpl implements IPostService {
                            .page(pageNo)
                            .size(pageSize)
                            .total(postPage.getTotalPages())
-                           .items(postPage.stream().map(postMapper::toPostResponse).toList())
+                           .items(postPage.stream()
+                                          .map(postMapper::toPostResponse)
+                                          .toList())
                            .build();
     }
 

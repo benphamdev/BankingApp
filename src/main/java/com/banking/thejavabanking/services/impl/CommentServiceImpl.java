@@ -1,7 +1,7 @@
 package com.banking.thejavabanking.services.impl;
 
 import com.banking.thejavabanking.exceptions.AppException;
-import com.banking.thejavabanking.exceptions.ErrorResponse;
+import com.banking.thejavabanking.exceptions.EnumsErrorResponse;
 import com.banking.thejavabanking.models.entity.Comment;
 import com.banking.thejavabanking.models.entity.Post;
 import com.banking.thejavabanking.repositories.CommentRepository;
@@ -22,7 +22,7 @@ public class CommentServiceImpl implements ICommentService {
     public Comment createComment(Long postId, String postBy, String content) {
         Optional<Post> post = postRepository.findById(postId);
         if (post.isEmpty())
-            throw new AppException(ErrorResponse.POST_NOT_FOUND);
+            throw new AppException(EnumsErrorResponse.POST_NOT_FOUND);
 
         Comment comment = Comment.builder()
                                  .post(post.get())

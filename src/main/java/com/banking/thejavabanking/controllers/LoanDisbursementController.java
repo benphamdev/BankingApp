@@ -1,7 +1,7 @@
 package com.banking.thejavabanking.controllers;
 
 import com.banking.thejavabanking.dto.requests.CreditDebitRequest;
-import com.banking.thejavabanking.dto.respones.BaseResponse;
+import com.banking.thejavabanking.dto.respones.shared.BaseResponse;
 import com.banking.thejavabanking.models.entity.Account;
 import com.banking.thejavabanking.models.entity.LoanDisbursement;
 import com.banking.thejavabanking.services.IAccountService;
@@ -40,7 +40,7 @@ public class LoanDisbursementController {
         var loanDetail = loanDetailService.getLoanDetailById(loanDetailId);
 
         if (loanDetail == null) {
-            return new BaseResponse<>("Loan detail not found");
+            return new BaseResponse<>(HttpStatus.OK.value(), "Loan detail not found");
         }
 
         var userId = loanDetail.getUser()
@@ -49,7 +49,7 @@ public class LoanDisbursementController {
         Optional<Account> account = accountService.getAccountByUserId(userId);
 
         if (account.isEmpty()) {
-            return new BaseResponse<>("Account not found");
+            return new BaseResponse<>(HttpStatus.OK.value(), "Account not found");
         }
         iAccountService.creditAccount(
                 CreditDebitRequest.builder()
@@ -62,7 +62,11 @@ public class LoanDisbursementController {
 
         loanDisbursement.setLoanDetail(loanDetail);
 
-        return new BaseResponse<>(loanDisbursementService.createLoanDisbursement(loanDisbursement));
+        return new BaseResponse<>(
+                HttpStatus.OK.value(),
+                "create loan successfully",
+                loanDisbursementService.createLoanDisbursement(loanDisbursement)
+        );
     }
 
     @GetMapping("/{id}")
@@ -78,7 +82,11 @@ public class LoanDisbursementController {
     @GetMapping
     public BaseResponse<List<LoanDisbursement>> getLoanDisbursements() {
 
-        return new BaseResponse<>(loanDisbursementService.getLoanDisbursements());
+        return new BaseResponse<>(
+                HttpStatus.OK.value(),
+                "List of all loan disbursements",
+                loanDisbursementService.getLoanDisbursements()
+        );
     }
 
     @PutMapping("/{id}")

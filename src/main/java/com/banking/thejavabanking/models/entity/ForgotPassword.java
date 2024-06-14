@@ -1,5 +1,6 @@
 package com.banking.thejavabanking.models.entity;
 
+import com.banking.thejavabanking.models.abstractions.DateTrackingBase;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -7,15 +8,15 @@ import lombok.experimental.FieldDefaults;
 import java.io.Serializable;
 import java.util.Date;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 @Builder
-@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 @Table(name = "tbl_forgot_password")
-public class ForgotPassword extends BaseEntity implements Serializable {
+public class ForgotPassword extends DateTrackingBase<Integer> implements Serializable {
     @Column(
             name = "otp",
             nullable = false

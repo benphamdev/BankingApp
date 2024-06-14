@@ -1,4 +1,4 @@
-package com.banking.thejavabanking.dto.respones;
+package com.banking.thejavabanking.dto.respones.shared;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -1,7 +1,7 @@
 package com.banking.thejavabanking.controllers;
 
 import com.banking.thejavabanking.dto.requests.TagRequest;
-import com.banking.thejavabanking.dto.respones.BaseResponse;
+import com.banking.thejavabanking.dto.respones.shared.BaseResponse;
 import com.banking.thejavabanking.models.entity.Tag;
 import com.banking.thejavabanking.services.impl.TagServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
