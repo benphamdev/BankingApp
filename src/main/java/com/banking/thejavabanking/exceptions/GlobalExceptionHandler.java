@@ -181,16 +181,16 @@ public class GlobalExceptionHandler {
         String errorMessage = e.getRootCause()
                                .getMessage();
 
-        if (errorMessage.contains("Duplicate entry")) {
-            int startIndex = errorMessage.indexOf("'") + 1;
-            int endIndex = errorMessage.indexOf("'", startIndex);
-            String duplicateValue = errorMessage.substring(startIndex, endIndex);
-            duplicateValue = duplicateValue.contains("@")
-                    ? String.format("Email : %s %s", duplicateValue, EnumsErrorResponse.EMAIL_EXISTS)
-                    : String.format("Phone number : %s %s", duplicateValue, EnumsErrorResponse.PHONE_NUMBER_EXISTS
-            );
-            errorResponse.setMessage(duplicateValue);
-        }
+//        if (errorMessage.contains("Duplicate entry")) {
+        int startIndex = errorMessage.indexOf("'") + 1;
+        int endIndex = errorMessage.indexOf("'", startIndex);
+        String duplicateValue = errorMessage.substring(startIndex, endIndex);
+        duplicateValue = duplicateValue.contains("@")
+                ? String.format("Email : %s %s", duplicateValue, EnumsErrorResponse.EMAIL_EXISTS)
+                : String.format("Phone number : %s %s", duplicateValue, EnumsErrorResponse.PHONE_NUMBER_EXISTS
+        );
+        errorResponse.setMessage(duplicateValue);
+//        }
         return errorResponse;
     }
 
