@@ -2,8 +2,8 @@ package com.banking.thejavabanking.services;
 
 import com.banking.thejavabanking.dto.requests.UserCreationRequest;
 import com.banking.thejavabanking.dto.requests.UserUpdateRequest;
-import com.banking.thejavabanking.dto.respones.PageResponse;
 import com.banking.thejavabanking.dto.respones.UserResponse;
+import com.banking.thejavabanking.dto.respones.shared.PageResponse;
 import com.banking.thejavabanking.models.entity.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;

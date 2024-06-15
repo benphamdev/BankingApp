@@ -43,7 +43,7 @@ public class ApplicationInitConfig {
                                  .firstName("Admin")
                                  .email("admin")
                                  .password(passwordEncoder.encode("123456789"))
-                                 .gender("male")
+                                 .gender(Enums.Gender.MALE)
 //                                 .roles(roles)
                                  .build();
 

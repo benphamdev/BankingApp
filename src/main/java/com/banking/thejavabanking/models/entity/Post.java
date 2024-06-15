@@ -1,5 +1,6 @@
 package com.banking.thejavabanking.models.entity;
 
+import com.banking.thejavabanking.models.abstractions.BaseAuditEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -7,15 +8,15 @@ import lombok.experimental.FieldDefaults;
 import java.util.ArrayList;
 import java.util.List;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @Builder
-@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "tbl_post")
-public class Post extends BaseEntity {
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
+public class Post extends BaseAuditEntity<Integer> {
     String name;
     String content;
     Long likeCount;

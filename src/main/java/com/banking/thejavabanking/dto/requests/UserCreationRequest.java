@@ -1,7 +1,9 @@
 package com.banking.thejavabanking.dto.requests;
 
 import com.banking.thejavabanking.dto.validators.DobConstraint;
+import com.banking.thejavabanking.dto.validators.EnumValue;
 import com.banking.thejavabanking.dto.validators.PhoneNumberConstraint;
+import com.banking.thejavabanking.models.Enums;
 import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -28,6 +30,8 @@ public class UserCreationRequest implements Serializable {
 //    @JsonFormat(pattern = "MM/dd/yyyy")
     LocalDate dob;
 
+    @NotNull(message = "gender is required")
+    @EnumValue(name = "gender", enumClass = Enums.Gender.class)
     String gender;
 
     @Email(message = "INVALID_EMAIL")

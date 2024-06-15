@@ -2,7 +2,7 @@ package com.banking.thejavabanking.services.impl;
 
 import com.banking.thejavabanking.dto.requests.SavingRequest;
 import com.banking.thejavabanking.exceptions.AppException;
-import com.banking.thejavabanking.exceptions.ErrorResponse;
+import com.banking.thejavabanking.exceptions.EnumsErrorResponse;
 import com.banking.thejavabanking.models.entity.Account;
 import com.banking.thejavabanking.models.entity.Saving;
 import com.banking.thejavabanking.repositories.AccountRepository;
@@ -41,13 +41,15 @@ public class SavingServiceImpl implements ISavingService {
                                         .orElseThrow(() -> new RuntimeException(
                                                 "Account not found"));
 
-        if (account.getBalance().compareTo(savingRequest.getAmount()) < 0) {
+        if (account.getBalance()
+                   .compareTo(savingRequest.getAmount()) < 0) {
             throw new RuntimeException("Insufficient balance");
         }
 
         accountRepository.updateBalance(
                 savingRequest.getUserId(),
-                account.getBalance().subtract(savingRequest.getAmount())
+                account.getBalance()
+                       .subtract(savingRequest.getAmount())
         );
 
         Saving saving = Saving.builder()
@@ -78,7 +80,8 @@ public class SavingServiceImpl implements ISavingService {
                 }
                 refundSaving(
                         saving.getId(),
-                        saving.getUser().getId(),
+                        saving.getUser()
+                              .getId(),
                         saving.getRefundAmount(),
                         saving.isStatusRefund()
                 );
@@ -91,8 +94,10 @@ public class SavingServiceImpl implements ISavingService {
     public void processSaving(Saving saving) {
         Optional<Saving> optionalSaving = savingRepository.findById(saving.getId());
 
-        BigDecimal balance = saving.getRefundAmount().add(
-                saving.getRefundAmount().multiply(BigDecimal.valueOf(0.2)));
+        BigDecimal balance = saving.getRefundAmount()
+                                   .add(
+                                           saving.getRefundAmount()
+                                                 .multiply(BigDecimal.valueOf(0.2)));
 
         try {
             savingRepository.updateAmount(saving.getId(), balance);
@@ -110,7 +115,8 @@ public class SavingServiceImpl implements ISavingService {
         BigDecimal amount = saving.getBaseAmount();
         refundSaving(
                 savingId,
-                saving.getUser().getId(),
+                saving.getUser()
+                      .getId(),
                 amount.multiply(BigDecimal.valueOf(1.1)),
                 saving.isStatusRefund()
         );
@@ -120,7 +126,7 @@ public class SavingServiceImpl implements ISavingService {
     public Saving getSavingByUserId(Integer userId) {
         Optional<Saving> optionalSaving = savingRepository.findByUserId(userId);
         if (optionalSaving.isEmpty())
-            throw new AppException(ErrorResponse.SAVING_NOT_FOUND);
+            throw new AppException(EnumsErrorResponse.SAVING_NOT_FOUND);
         return optionalSaving.get();
     }
 
@@ -141,7 +147,8 @@ public class SavingServiceImpl implements ISavingService {
 
         accountRepository.updateBalance(
                 userId,
-                account.getBalance().add(refundAmount)
+                account.getBalance()
+                       .add(refundAmount)
         );
 
         // send email

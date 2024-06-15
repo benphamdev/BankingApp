@@ -2,7 +2,7 @@ package com.banking.thejavabanking.services.impl;
 
 import com.banking.thejavabanking.dto.requests.TagRequest;
 import com.banking.thejavabanking.exceptions.AppException;
-import com.banking.thejavabanking.exceptions.ErrorResponse;
+import com.banking.thejavabanking.exceptions.EnumsErrorResponse;
 import com.banking.thejavabanking.models.entity.Tag;
 import com.banking.thejavabanking.repositories.TagRepository;
 import com.banking.thejavabanking.services.ITagService;
@@ -23,7 +23,7 @@ public class TagServiceImpl implements ITagService {
     @Override
     public Tag saveTag(TagRequest tag) {
         if (tagRepository.existsByName(tag.getName()))
-            throw new AppException(ErrorResponse.TAG_ALREADY_EXISTS);
+            throw new AppException(EnumsErrorResponse.TAG_ALREADY_EXISTS);
 
         log.info(tag.getName());
         Tag tag1 = Tag.builder()
@@ -36,7 +36,7 @@ public class TagServiceImpl implements ITagService {
     @Override
     public Tag getTagById(Integer id) {
         Tag tag = tagRepository.findById(id)
-                               .orElseThrow(() -> new AppException(ErrorResponse.TAG_NOT_FOUND));
+                               .orElseThrow(() -> new AppException(EnumsErrorResponse.TAG_NOT_FOUND));
 
         return tag;
     }
@@ -49,7 +49,7 @@ public class TagServiceImpl implements ITagService {
     @Override
     public void deleteTag(Integer id) {
         if (!tagRepository.existsById(id))
-            throw new AppException(ErrorResponse.TAG_NOT_FOUND);
+            throw new AppException(EnumsErrorResponse.TAG_NOT_FOUND);
         tagRepository.deleteById(id);
     }
 
@@ -61,7 +61,7 @@ public class TagServiceImpl implements ITagService {
     @Override
     public void updateTag(Integer id, TagRequest tag) {
         Tag tag1 = tagRepository.findById(id)
-                                .orElseThrow(() -> new AppException(ErrorResponse.TAG_NOT_FOUND));
+                                .orElseThrow(() -> new AppException(EnumsErrorResponse.TAG_NOT_FOUND));
 
         tag1.setName(tag.getName());
         tagRepository.save(tag1);

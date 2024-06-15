@@ -5,7 +5,7 @@ import com.banking.thejavabanking.dto.requests.CreditDebitRequest;
 import com.banking.thejavabanking.dto.requests.EnquiryRequest;
 import com.banking.thejavabanking.dto.requests.TransferRequest;
 import com.banking.thejavabanking.dto.respones.AccountInfoResponse;
-import com.banking.thejavabanking.dto.respones.BaseResponse;
+import com.banking.thejavabanking.dto.respones.shared.BaseResponse;
 import com.banking.thejavabanking.models.entity.Account;
 import com.banking.thejavabanking.services.impl.AccountServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.List;
 @RequestMapping("/account")
 @Slf4j
 @Tag(name = "Account controller", description = "The Account API")
+@Validated
 public class AccountController {
     private final AccountServiceImpl accountService;
 

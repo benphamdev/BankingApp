@@ -1,18 +1,18 @@
 package com.banking.thejavabanking.exceptions;
 
 public class AppException extends RuntimeException {
-    ErrorResponse errorResponse;
+    EnumsErrorResponse errorResponse;
 
-    public AppException(ErrorResponse errorResponse) {
+    public AppException(EnumsErrorResponse errorResponse) {
         super(errorResponse.getMessage());
         this.errorResponse = errorResponse;
     }
 
-    public ErrorResponse getErrorResponse() {
+    public EnumsErrorResponse getErrorResponse() {
         return errorResponse;
     }
 
-    public void setErrorResponse(ErrorResponse errorResponse) {
+    public void setErrorResponse(EnumsErrorResponse errorResponse) {
         this.errorResponse = errorResponse;
     }
 }

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-import static com.banking.thejavabanking.exceptions.ErrorResponse.PROVINCE_NOT_FOUND;
+import static com.banking.thejavabanking.exceptions.EnumsErrorResponse.PROVINCE_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +35,9 @@ public class BranchInfoServiceImpl implements IBranchInfoService {
         branchInfo.setAddress(branchInfoRequest.getAddress());
         branchInfo.setProvince(province.get());
 
-        branchInfo.getProvince().setName(province.get().getName());
+        branchInfo.getProvince()
+                  .setName(province.get()
+                                   .getName());
         branchInfoRepository.save(branchInfo);
         return branchInfo.getId();
     }
@@ -47,7 +49,10 @@ public class BranchInfoServiceImpl implements IBranchInfoService {
 
     @Override
     public List<BranchResponse> getAllBranchInfo() {
-        return branchInfoRepository.findAll().stream().map(branchMapper::toBranchResponse).toList();
+        return branchInfoRepository.findAll()
+                                   .stream()
+                                   .map(branchMapper::toBranchResponse)
+                                   .toList();
     }
 
     @Override
@@ -57,7 +62,8 @@ public class BranchInfoServiceImpl implements IBranchInfoService {
 
     @Override
     public List<BranchInfo> getBranchInfoByProvinceId(Integer provinceId) {
-        if (provinceService.getProvinceById(provinceId).isEmpty())
+        if (provinceService.getProvinceById(provinceId)
+                           .isEmpty())
             throw new AppException(PROVINCE_NOT_FOUND);
 
         return branchInfoRepository.findByProvinceId(provinceId);
@@ -65,7 +71,8 @@ public class BranchInfoServiceImpl implements IBranchInfoService {
 
     @Override
     public void updateBranchInfo(Integer id, BranchUpdateRequest branchUpdateRequest) {
-        BranchInfo branchInfo = branchInfoRepository.findById(id).orElseThrow();
+        BranchInfo branchInfo = branchInfoRepository.findById(id)
+                                                    .orElseThrow();
         branchInfo.setBranchName(branchUpdateRequest.getBranchName());
         branchInfo.setAddress(branchUpdateRequest.getAddress());
         branchInfoRepository.save(branchInfo);

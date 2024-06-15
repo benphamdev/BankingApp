@@ -2,8 +2,8 @@ package com.banking.thejavabanking.controllers;
 
 import com.banking.thejavabanking.dto.requests.BranchInfoRequest;
 import com.banking.thejavabanking.dto.requests.BranchUpdateRequest;
-import com.banking.thejavabanking.dto.respones.BaseResponse;
 import com.banking.thejavabanking.dto.respones.BranchResponse;
+import com.banking.thejavabanking.dto.respones.shared.BaseResponse;
 import com.banking.thejavabanking.exceptions.AppException;
 import com.banking.thejavabanking.models.entity.BranchInfo;
 import com.banking.thejavabanking.services.impl.BranchInfoServiceImpl;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-import static com.banking.thejavabanking.exceptions.ErrorResponse.BRANCH_NOT_FOUND;
+import static com.banking.thejavabanking.exceptions.EnumsErrorResponse.BRANCH_NOT_FOUND;
 
 @RestController
 @RequestMapping("/branch")

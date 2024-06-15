@@ -2,11 +2,12 @@ package com.banking.thejavabanking.services.impl;
 
 import com.banking.thejavabanking.dto.requests.UserCreationRequest;
 import com.banking.thejavabanking.dto.requests.UserUpdateRequest;
-import com.banking.thejavabanking.dto.respones.PageResponse;
 import com.banking.thejavabanking.dto.respones.UserResponse;
+import com.banking.thejavabanking.dto.respones.shared.PageResponse;
 import com.banking.thejavabanking.exceptions.AppException;
-import com.banking.thejavabanking.exceptions.ErrorResponse;
+import com.banking.thejavabanking.exceptions.EnumsErrorResponse;
 import com.banking.thejavabanking.mapper.UserMapper;
+import com.banking.thejavabanking.models.Enums;
 import com.banking.thejavabanking.models.entity.Address;
 import com.banking.thejavabanking.models.entity.PhoneToken;
 import com.banking.thejavabanking.models.entity.Photo;
@@ -67,12 +68,6 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public long createUser(UserCreationRequest userRequest) {
-        if (userRepository.existsByEmail(userRequest.getEmail()))
-            throw new AppException(ErrorResponse.EMAIL_EXISTS);
-
-        if (userRepository.existsUserByPhoneNumber(userRequest.getPhoneNumber()))
-            throw new AppException(ErrorResponse.PHONE_NUMBER_EXISTS);
-
 //        User user = userMapper.toEntity(userRequest);
 //        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 
@@ -80,7 +75,8 @@ public class UserServiceImpl implements IUserService {
                         .firstName(userRequest.getFirstName())
                         .lastName(userRequest.getLastName())
                         .dob(userRequest.getDob())
-                        .gender(userRequest.getGender())
+                        .gender(Enums.Gender.valueOf(userRequest.getGender()
+                                                                .toUpperCase()))
                         .phoneNumber(userRequest.getPhoneNumber())
                         .email(userRequest.getEmail())
                         .password(passwordEncoder.encode(userRequest.getPassword()))
@@ -128,7 +124,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public UserResponse getUserReponeseByID(Integer id) {
         User user = userRepository.findUserById(id)
-                                  .orElseThrow(() -> new AppException(ErrorResponse.USER_NOT_FOUND));
+                                  .orElseThrow(() -> new AppException(EnumsErrorResponse.USER_NOT_FOUND));
 
         return UserResponse.builder()
                            .id(user.getId())
@@ -140,7 +136,7 @@ public class UserServiceImpl implements IUserService {
 
     public User getUserById(int id) {
         return userRepository.findUserById(id)
-                             .orElseThrow(() -> new AppException(ErrorResponse.USER_NOT_FOUND));
+                             .orElseThrow(() -> new AppException(EnumsErrorResponse.USER_NOT_FOUND));
     }
 
     @Override
@@ -149,7 +145,7 @@ public class UserServiceImpl implements IUserService {
         String name = context.getAuthentication()
                              .getName();
         User user = userRepository.findByEmail(name)
-                                  .orElseThrow(() -> new AppException(ErrorResponse.USER_NOT_FOUND));
+                                  .orElseThrow(() -> new AppException(EnumsErrorResponse.USER_NOT_FOUND));
 
         return userMapper.toResponse(user);
     }
@@ -157,7 +153,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public void updateUser(Integer id, UserUpdateRequest request) {
         User user = userRepository.findUserById(id)
-                                  .orElseThrow(() -> new AppException(ErrorResponse.USER_NOT_FOUND));
+                                  .orElseThrow(() -> new AppException(EnumsErrorResponse.USER_NOT_FOUND));
         userMapper.updateEntity(user, request);
 
         user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -178,7 +174,7 @@ public class UserServiceImpl implements IUserService {
         BufferedImage bi = ImageIO.read(profilePicture.getInputStream());
 
         if (bi == null) {
-            throw new AppException(ErrorResponse.INVALID_IMAGE);
+            throw new AppException(EnumsErrorResponse.INVALID_IMAGE);
         }
 //        User user = userRepository.findUserById(userId)
 //                                  .orElseThrow(() -> new AppException(ErrorResponse.USER_NOT_FOUND));
@@ -220,7 +216,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public void deleteUser(Integer id) {
         User user = userRepository.findUserById(id)
-                                  .orElseThrow(() -> new AppException(ErrorResponse.USER_NOT_FOUND));
+                                  .orElseThrow(() -> new AppException(EnumsErrorResponse.USER_NOT_FOUND));
 
         userRepository.delete(user);
     }

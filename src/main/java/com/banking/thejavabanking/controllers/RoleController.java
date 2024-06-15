@@ -1,8 +1,8 @@
 package com.banking.thejavabanking.controllers;
 
 import com.banking.thejavabanking.dto.requests.RoleRequest;
-import com.banking.thejavabanking.dto.respones.BaseResponse;
 import com.banking.thejavabanking.dto.respones.RoleResponse;
+import com.banking.thejavabanking.dto.respones.shared.BaseResponse;
 import com.banking.thejavabanking.services.impl.RoleService;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -45,6 +45,7 @@ public class RoleController {
             @PathVariable String role
     ) {
         roleService.delete(role);
-        return BaseResponse.<Void>builder().build();
+        return BaseResponse.<Void>builder()
+                           .build();
     }
 }

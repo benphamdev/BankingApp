@@ -1,5 +1,6 @@
 package com.banking.thejavabanking.models.entity;
 
+import com.banking.thejavabanking.models.abstractions.BaseAuditEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
@@ -17,7 +18,7 @@ import java.io.Serializable;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 @Entity
 @Table(name = "tbl_loan_disbursement")
-public class LoanDisbursement extends BaseEntity implements Serializable {
+public class LoanDisbursement extends BaseAuditEntity<Integer> implements Serializable {
 //    @Column(
 //            name = "disbursement_date",
 //            nullable = false

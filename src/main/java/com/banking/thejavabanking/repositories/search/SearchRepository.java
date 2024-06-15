@@ -1,6 +1,6 @@
 package com.banking.thejavabanking.repositories.search;
 
-import com.banking.thejavabanking.dto.respones.PageResponse;
+import com.banking.thejavabanking.dto.respones.shared.PageResponse;
 import com.banking.thejavabanking.models.entity.Account;
 import com.banking.thejavabanking.models.entity.Address;
 import com.banking.thejavabanking.models.entity.User;

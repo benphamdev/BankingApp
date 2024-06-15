@@ -1,5 +1,6 @@
 package com.banking.thejavabanking.models.entity;
 
+import com.banking.thejavabanking.models.abstractions.BaseAuditEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -12,15 +13,15 @@ import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @Builder
-@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 @Table(name = "tbl_loan_info")
-public class LoanInfo extends BaseEntity implements Serializable {
+public class LoanInfo extends BaseAuditEntity<Integer> implements Serializable {
     @NotNull
     @Positive
     @Column(name = "loan_amount")

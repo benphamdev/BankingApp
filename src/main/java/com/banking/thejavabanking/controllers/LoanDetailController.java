@@ -1,8 +1,8 @@
 package com.banking.thejavabanking.controllers;
 
 import com.banking.thejavabanking.dto.requests.LoanDetailRequest;
-import com.banking.thejavabanking.dto.respones.BaseResponse;
 import com.banking.thejavabanking.dto.respones.InterestCalculationResponse;
+import com.banking.thejavabanking.dto.respones.shared.BaseResponse;
 import com.banking.thejavabanking.models.Enums;
 import com.banking.thejavabanking.models.entity.LoanDetail;
 import com.banking.thejavabanking.services.impl.LoanDetailServiceImpl;

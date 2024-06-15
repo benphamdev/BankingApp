@@ -1,6 +1,6 @@
 package com.banking.thejavabanking.controllers;
 
-import com.banking.thejavabanking.dto.respones.BaseResponse;
+import com.banking.thejavabanking.dto.respones.shared.BaseResponse;
 import com.banking.thejavabanking.models.entity.Comment;
 import com.banking.thejavabanking.services.impl.CommentServiceImpl;
 import jakarta.validation.constraints.Min;

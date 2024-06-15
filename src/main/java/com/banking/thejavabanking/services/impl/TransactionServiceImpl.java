@@ -1,8 +1,8 @@
 package com.banking.thejavabanking.services.impl;
 
 import com.banking.thejavabanking.dto.requests.ExportTransactionToPdfRequest;
-import com.banking.thejavabanking.dto.respones.PageResponse;
 import com.banking.thejavabanking.dto.respones.UserTransactionResponse;
+import com.banking.thejavabanking.dto.respones.shared.PageResponse;
 import com.banking.thejavabanking.models.entity.UserTransaction;
 import com.banking.thejavabanking.repositories.AccountRepository;
 import com.banking.thejavabanking.repositories.TransactionRepository;
@@ -122,7 +122,8 @@ public class TransactionServiceImpl implements ITransactionService {
                            .page(userTransactions.getNumber())
                            .size(userTransactions.getSize())
                            .total((int) userTransactions.getTotalPages())
-                           .items(userTransactions.stream().toList())
+                           .items(userTransactions.stream()
+                                                  .toList())
                            .build();
     }
 
@@ -141,23 +142,30 @@ public class TransactionServiceImpl implements ITransactionService {
 
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(orders));
         Page<UserTransaction> userTransactions = transactionRepository.findUserTransactionByAccount(
-                accountRepository.findById(accountId).orElseThrow(),
+                accountRepository.findById(accountId)
+                                 .orElseThrow(),
                 pageable
         );
         return PageResponse.builder()
                            .page(userTransactions.getNumber())
                            .size(userTransactions.getSize())
                            .total((int) userTransactions.getTotalPages())
-                           .items(userTransactions.stream().map(this::convertUserTransactionResponse).toList())
+                           .items(userTransactions.stream()
+                                                  .map(this::convertUserTransactionResponse)
+                                                  .toList())
                            .build();
     }
 
     public UserTransactionResponse convertUserTransactionResponse(UserTransaction userTransaction) {
         return UserTransactionResponse.builder()
                                       .time(convertTime(userTransaction.getCreatedAt()))
-                                      .account(userTransaction.getAccount().getAccountNumber())
-                                      .transactionAmount(userTransaction.getAmount().toString() + " VND")
-                                      .currentBalance(userTransaction.getAccount().getBalance().toString() + " VND")
+                                      .account(userTransaction.getAccount()
+                                                              .getAccountNumber())
+                                      .transactionAmount(userTransaction.getAmount()
+                                                                        .toString() + " VND")
+                                      .currentBalance(userTransaction.getAccount()
+                                                                     .getBalance()
+                                                                     .toString() + " VND")
                                       .content(userTransaction.getDescription())
                                       .build();
     }

@@ -1,7 +1,7 @@
 package com.banking.thejavabanking.controllers;
 
-import com.banking.thejavabanking.dto.respones.BaseResponse;
 import com.banking.thejavabanking.dto.respones.ProvinceResponse;
+import com.banking.thejavabanking.dto.respones.shared.BaseResponse;
 import com.banking.thejavabanking.exceptions.AppException;
 import com.banking.thejavabanking.models.entity.Province;
 import com.banking.thejavabanking.services.impl.ProvinceServiceImpl;
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-import static com.banking.thejavabanking.exceptions.ErrorResponse.PROVINCE_EXISTS;
-import static com.banking.thejavabanking.exceptions.ErrorResponse.PROVINCE_NOT_FOUND;
+import static com.banking.thejavabanking.exceptions.EnumsErrorResponse.PROVINCE_EXISTS;
+import static com.banking.thejavabanking.exceptions.EnumsErrorResponse.PROVINCE_NOT_FOUND;
 
 @RestController
 @RequestMapping("/province")

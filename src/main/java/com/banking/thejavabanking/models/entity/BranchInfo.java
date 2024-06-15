@@ -1,5 +1,6 @@
 package com.banking.thejavabanking.models.entity;
 
+import com.banking.thejavabanking.models.abstractions.DateTrackingBase;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,15 +9,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 @Builder
-@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "tbl_branch_info")
-public class BranchInfo extends BaseEntity implements Serializable {
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
+public class BranchInfo extends DateTrackingBase<Integer> implements Serializable {
     @Column(name = "branch_name")
     String branchName;
 

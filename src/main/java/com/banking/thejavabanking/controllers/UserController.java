@@ -2,8 +2,8 @@ package com.banking.thejavabanking.controllers;
 
 import com.banking.thejavabanking.dto.requests.UserCreationRequest;
 import com.banking.thejavabanking.dto.requests.UserUpdateRequest;
-import com.banking.thejavabanking.dto.respones.BaseResponse;
 import com.banking.thejavabanking.dto.respones.UserResponse;
+import com.banking.thejavabanking.dto.respones.shared.BaseResponse;
 import com.banking.thejavabanking.services.impl.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -13,11 +13,13 @@ import jakarta.validation.constraints.Min;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+import static org.springframework.http.HttpStatus.RESET_CONTENT;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -26,80 +28,129 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
         name = "User Account API",
         description = "User API"
 )
+@Validated
 @Slf4j
 public class UserController {
     private final UserServiceImpl userService;
 
     public UserController(UserServiceImpl userService) {this.userService = userService;}
 
-    @Operation(
-            summary = "Create Account",
-            description = "Create a new account"
-    )
+    @Operation(method = "POST", summary = "Create Account", description = "Send a request via this API to create a new account.")
     @ApiResponse(
             responseCode = "200",
             description = "Account created successfully"
     )
     @PostMapping(value = "/signup")
-    public BaseResponse<Long> addUser(
-            @RequestBody @Valid UserCreationRequest userRequest
-    ) {
+    public BaseResponse<Long> addUser(@RequestBody @Valid UserCreationRequest userRequest) {
         log.info(
                 "Request to create a new account , {}, {}",
                 userRequest.getFirstName(),
                 userRequest.getLastName()
         );
+//        try {
         long userId = userService.createUser(userRequest);
         return new BaseResponse<>(HttpStatus.CREATED.value(), "Account created successfully", userId);
+//        } catch (Exception e) {
+////            log.error("Error message: {}", e.getMessage(), e.getCause());
+//            return new BaseResponse<>(HttpStatus.BAD_REQUEST.value(), "Error occurred while creating account");
+//        }
     }
 
+    @Operation(
+            summary = "Update user",
+            description = "Send a request via this API to update an existing user."
+    )
     @PutMapping("/{userId}")
     public BaseResponse<Void> updateUser(
             @PathVariable("userId") @Min(1) Integer id,
             @RequestBody UserUpdateRequest user
     ) {
-        userService.updateUser(id, user);
-        return new BaseResponse<>(HttpStatus.OK.value(), "User updated successfully");
+        try {
+            userService.updateUser(id, user);
+            return new BaseResponse<>(HttpStatus.ACCEPTED.value(), "User updated successfully");
+        } catch (Exception e) {
+            return new BaseResponse<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        }
     }
 
+    @Operation(
+            summary = "Get user profile",
+            description = "Send a request via this API to get user profile"
+    )
     @GetMapping("/myProfile")
     public BaseResponse<UserResponse> getMyProfile() {
+
         return BaseResponse.<UserResponse>builder()
+                           .status(HttpStatus.ACCEPTED.value())
                            .message("Profile retrieved successfully")
                            .data(userService.getMyProfile())
                            .build();
     }
 
+    @Operation(
+            summary = "Update user profile",
+            description = "Send a request via this API to update user profile"
+    )
     @PostMapping("/update-avatar")
     public BaseResponse<UserResponse> updateProfile(
             @RequestParam("user_id") @Min(1) int userId,
             @RequestBody MultipartFile profilePicture
     ) throws IOException {
-        return BaseResponse.<UserResponse>builder()
-                           .message("Profile picture updated successfully")
-                           .data(userService.updateProfile(userId, profilePicture))
-                           .build();
+        try {
+            return BaseResponse.<UserResponse>builder()
+                               .status(HttpStatus.ACCEPTED.value())
+                               .message("Profile picture updated successfully")
+                               .data(userService.updateProfile(userId, profilePicture))
+                               .build();
+        } catch (Exception e) {
+            return BaseResponse.<UserResponse>builder()
+                               .status(HttpStatus.BAD_REQUEST.value())
+                               .message("Error occurred while updating profile picture")
+                               .build();
+        }
     }
 
+    @Operation(
+            summary = "Update phone token",
+            description = "Send a request via this API to update phone token"
+    )
     @GetMapping("/{userId}")
     public BaseResponse<Void> updatePhoneToken(
             @PathVariable("userId") int userId,
             @RequestParam(value = "phoneToken", required = false) String phoneToken
     ) {
-        userService.updatePhoneToken(userId, phoneToken);
-        return BaseResponse.<Void>builder()
-                           .message("Phone token updated successfully")
-                           .build();
+        try {
+            userService.updatePhoneToken(userId, phoneToken);
+            return BaseResponse.<Void>builder()
+                               .status(HttpStatus.ACCEPTED.value())
+                               .message("Phone token updated successfully")
+                               .build();
+        } catch (Exception e) {
+            return BaseResponse.<Void>builder()
+                               .status(HttpStatus.BAD_REQUEST.value())
+                               .message("Error occurred while updating phone token")
+                               .build();
+        }
     }
 
+    @Operation(
+            summary = "Delete user",
+            description = "Send a request via this API to delete an existing user."
+    )
     @DeleteMapping("/{userId}")
     public BaseResponse<String> deleteUser(
-            @PathVariable("userId") @Min(1) int id
+            @PathVariable("userId") @Min(value = 1, message = "min 1") int id
     ) {
-        userService.deleteUser(id);
-        return BaseResponse.<String>builder()
-                           .message("User deleted successfully")
-                           .build();
+        try {
+            userService.deleteUser(id);
+            return BaseResponse.<String>builder()
+                               .status(RESET_CONTENT.value())
+                               .message("User deleted successfully")
+                               .build();
+        } catch (Exception e) {
+            log.error("Error message: {}", e.getMessage(), e.getCause());
+            return new BaseResponse<>(HttpStatus.BAD_REQUEST.value(), "Error occurred while deleting user");
+        }
     }
 
     @Operation(
@@ -108,18 +159,11 @@ public class UserController {
     )
     @GetMapping("/list")
     public BaseResponse<?> getAllUsersWithSortBy(
-            @RequestParam(
-                    defaultValue = "0",
-                    required = false
-            ) int pageNo,
-            @Min(10)
-            @RequestParam(
-                    defaultValue = "20",
-                    required = false
-            )
-            int pageSize
+            @RequestParam(defaultValue = "0", required = false) int pageNo,
+            @RequestParam(defaultValue = "20", required = false) @Min(10) int pageSize
     ) {
         return BaseResponse.builder()
+                           .status(HttpStatus.OK.value())
                            .message("User list retrieved successfully")
                            .data(userService.getAllUsersWithSortBy(pageNo, pageSize))
                            .build();
@@ -131,19 +175,12 @@ public class UserController {
     )
     @GetMapping("/list1")
     public BaseResponse<?> getAllUsersWithSortBy1(
-            @RequestParam(
-                    defaultValue = "0",
-                    required = false
-            ) int pageNo,
-            @Min(10)
-            @RequestParam(
-                    defaultValue = "20",
-                    required = false
-            )
-            int pageSize,
+            @RequestParam(defaultValue = "0", required = false) int pageNo,
+            @RequestParam(defaultValue = "20", required = false) @Min(10) int pageSize,
             @RequestParam(required = false) String sortBy
     ) {
         return BaseResponse.builder()
+                           .status(HttpStatus.OK.value())
                            .message("User list retrieved successfully")
                            .data(userService.getAllUsersWithSortBy(pageNo, pageSize, sortBy))
                            .build();
@@ -156,7 +193,7 @@ public class UserController {
     @GetMapping("/list-with-sort-by-multiple-columns")
     public BaseResponse<?> getAllUsersWithSortByMultiColumns(
             @RequestParam(defaultValue = "0", required = false) int pageNo,
-            @Min(10) @RequestParam(defaultValue = "20", required = false) int pageSize,
+            @RequestParam(defaultValue = "20", required = false) @Min(10) int pageSize,
             @RequestParam(required = false) String... sorts
     ) {
         log.info("Request to get user list by pageNo, pageSize and sort by multiple columns");

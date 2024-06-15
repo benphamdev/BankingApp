@@ -1,6 +1,7 @@
 package com.banking.thejavabanking.models.entity;
 
 import com.banking.thejavabanking.models.Enums;
+import com.banking.thejavabanking.models.abstractions.DateTrackingBase;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,15 +10,15 @@ import lombok.experimental.FieldDefaults;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @Builder
-@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "tbl_user_transaction")
-public class UserTransaction extends BaseEntity implements Serializable {
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
+public class UserTransaction extends DateTrackingBase<Integer> implements Serializable {
     @Column(name = "transaction_type")
     @Enumerated(EnumType.STRING)
     Enums.TransactionType transactionType;

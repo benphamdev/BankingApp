@@ -7,7 +7,7 @@ import com.banking.thejavabanking.dto.requests.RefreshTokenRequest;
 import com.banking.thejavabanking.dto.respones.AuthenticationResponse;
 import com.banking.thejavabanking.dto.respones.IntrospectResponse;
 import com.banking.thejavabanking.exceptions.AppException;
-import com.banking.thejavabanking.exceptions.ErrorResponse;
+import com.banking.thejavabanking.exceptions.EnumsErrorResponse;
 import com.banking.thejavabanking.models.entity.InvalidatedToken;
 import com.banking.thejavabanking.models.entity.User;
 import com.banking.thejavabanking.repositories.InvalidatedTokenRepository;
@@ -81,8 +81,11 @@ public class AuthenticationImpl implements IAuthenticationService {
                 .subject(user.getEmail())
                 .issuer("thejavabanking")
                 .issueTime(new Date())
-                .expirationTime(new Date(Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()))
-                .jwtID(UUID.randomUUID().toString())
+                .expirationTime(new Date(Instant.now()
+                                                .plus(1, ChronoUnit.HOURS)
+                                                .toEpochMilli()))
+                .jwtID(UUID.randomUUID()
+                           .toString())
                 .claim("scope", buildScope(user))
                 .build();
 
@@ -102,13 +105,14 @@ public class AuthenticationImpl implements IAuthenticationService {
     private String buildScope(User user) {
         StringJoiner stringJoiner = new StringJoiner(" ");
         if (!CollectionUtils.isEmpty(user.getRoles()))
-            user.getRoles().forEach(role -> {
-                stringJoiner.add("ROLE_" + role.getName());
-                if (!CollectionUtils.isEmpty(role.getPermissions()))
-                    role.getPermissions()
-                        .forEach(permission -> stringJoiner.add(permission.getName()));
+            user.getRoles()
+                .forEach(role -> {
+                    stringJoiner.add("ROLE_" + role.getName());
+                    if (!CollectionUtils.isEmpty(role.getPermissions()))
+                        role.getPermissions()
+                            .forEach(permission -> stringJoiner.add(permission.getName()));
 
-            });
+                });
 
         return stringJoiner.toString();
     }
@@ -131,21 +135,25 @@ public class AuthenticationImpl implements IAuthenticationService {
         JWSVerifier verifier = new MACVerifier(SECRET_KEY.getBytes());
         SignedJWT signedJWT = SignedJWT.parse(token);
         var res = signedJWT.verify(verifier);
-        Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+        Date expirationTime = signedJWT.getJWTClaimsSet()
+                                       .getExpirationTime();
         if (!(expirationTime.after(new Date()) && res))
-            throw new AppException(ErrorResponse.UNAUTHENTICATED);
-        if (invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID()))
-            throw new AppException(ErrorResponse.UNAUTHENTICATED);
+            throw new AppException(EnumsErrorResponse.UNAUTHENTICATED);
+        if (invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet()
+                                                           .getJWTID()))
+            throw new AppException(EnumsErrorResponse.UNAUTHENTICATED);
         return signedJWT;
     }
 
     @Override
     public void logout(LogoutRequest logoutRequest) throws ParseException, JOSEException {
         var signToken = verifyToken(logoutRequest.getToken());
-        String jit = signToken.getJWTClaimsSet().getJWTID();
-        Date expirationTime = signToken.getJWTClaimsSet().getExpirationTime();
+        String jit = signToken.getJWTClaimsSet()
+                              .getJWTID();
+        Date expirationTime = signToken.getJWTClaimsSet()
+                                       .getExpirationTime();
         InvalidatedToken invalidatedToken = InvalidatedToken.builder()
-                                                            .id(jit)
+//                                                            .id(jit)
                                                             .expirationTime(expirationTime)
                                                             .build();
         invalidatedTokenRepository.save(invalidatedToken);
@@ -156,14 +164,17 @@ public class AuthenticationImpl implements IAuthenticationService {
             RefreshTokenRequest token
     ) throws ParseException, JOSEException {
         var signToken = verifyToken(token.getToken());
-        var jit = signToken.getJWTClaimsSet().getJWTID();
-        var expirationTime = signToken.getJWTClaimsSet().getExpirationTime();
+        var jit = signToken.getJWTClaimsSet()
+                           .getJWTID();
+        var expirationTime = signToken.getJWTClaimsSet()
+                                      .getExpirationTime();
         InvalidatedToken invalidatedToken = InvalidatedToken.builder()
                                                             .id(jit)
                                                             .expirationTime(expirationTime)
                                                             .build();
-        var user = userRepository.findByEmail(signToken.getJWTClaimsSet().getSubject())
-                                 .orElseThrow(() -> new AppException(ErrorResponse.USER_NOT_FOUND));
+        var user = userRepository.findByEmail(signToken.getJWTClaimsSet()
+                                                       .getSubject())
+                                 .orElseThrow(() -> new AppException(EnumsErrorResponse.USER_NOT_FOUND));
 
         return AuthenticationResponse.builder()
                                      .token(generateToken(user))

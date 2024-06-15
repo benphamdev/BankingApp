@@ -1,5 +1,6 @@
 package com.banking.thejavabanking.models.entity;
 
+import com.banking.thejavabanking.models.abstractions.DateTrackingBase;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,15 +10,15 @@ import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @Builder
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "tbl_photo")
-public class Photo extends BaseEntity implements Serializable {
+public class Photo extends DateTrackingBase<Integer> implements Serializable {
     @Column(name = "public_id")
     @JsonIgnore
     String publicId;

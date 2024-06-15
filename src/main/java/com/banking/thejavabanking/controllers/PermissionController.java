@@ -1,8 +1,8 @@
 package com.banking.thejavabanking.controllers;
 
 import com.banking.thejavabanking.dto.requests.PermissionRequest;
-import com.banking.thejavabanking.dto.respones.BaseResponse;
 import com.banking.thejavabanking.dto.respones.PermissionResponse;
+import com.banking.thejavabanking.dto.respones.shared.BaseResponse;
 import com.banking.thejavabanking.services.impl.PermissionService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AccessLevel;

@@ -1,7 +1,7 @@
 package com.banking.thejavabanking.controllers;
 
 import com.banking.thejavabanking.dto.requests.ChangePasswordRequest;
-import com.banking.thejavabanking.dto.respones.BaseResponse;
+import com.banking.thejavabanking.dto.respones.shared.BaseResponse;
 import com.banking.thejavabanking.services.impl.ForgotPasswordImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
