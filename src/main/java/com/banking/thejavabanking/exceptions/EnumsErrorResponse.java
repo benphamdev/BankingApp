@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatusCode;
 
 @Getter
 @AllArgsConstructor
-@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public enum EnumsErrorResponse {
     UNCATEGORIZED(9999, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
     INVALID_KEY(1001, "Invalid key", HttpStatus.BAD_REQUEST),
@@ -58,7 +58,6 @@ public enum EnumsErrorResponse {
     TAG_ALREADY_EXISTS(1028, "Tag already exists", HttpStatus.BAD_REQUEST),
     SAVING_NOT_FOUND(1029, "Saving not found", HttpStatus.NOT_FOUND),
     INVALID_TOKEN(1030, "Token is required", HttpStatus.BAD_REQUEST);
-
     int code;
     String message;
     HttpStatusCode httpStatusCode;

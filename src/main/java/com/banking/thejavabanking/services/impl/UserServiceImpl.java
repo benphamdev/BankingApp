@@ -278,7 +278,9 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public PageResponse<?> getAllUsersWithSortByMultiColumns(int pageNo, int pageSize, String... sorts) {
+    public PageResponse<?> getAllUsersWithSortByMultiColumns(
+            int pageNo, int pageSize, String... sorts
+    ) {
         if (pageNo > 0) pageNo--;
 
         List<Sort.Order> orders = new ArrayList<>();
@@ -323,7 +325,9 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public PageResponse<?> advancedSearchWithSpecification(Pageable pageable, String[] users, String[] address) {
+    public PageResponse<?> advancedSearchWithSpecification(
+            Pageable pageable, String[] users, String[] address
+    ) {
         Page<User> userList = null;
         if (users != null && address != null) {
             // TODO: Implement search by users and search

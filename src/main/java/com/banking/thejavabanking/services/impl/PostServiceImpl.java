@@ -41,7 +41,10 @@ import static lombok.AccessLevel.PRIVATE;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = PRIVATE, makeFinal = true)
+@FieldDefaults(
+        level = PRIVATE,
+        makeFinal = true
+)
 public class PostServiceImpl implements IPostService {
     PostRepository postRepository;
     PhotoServiceImpl photoService;
@@ -85,13 +88,16 @@ public class PostServiceImpl implements IPostService {
         phoneTokenRepository.findAll()
                             .forEach(phoneToken -> {
                                 firebaseMessagingService.sendNotification(NotificationMessageDTO.builder()
-                                                                                                .recipientToken(phoneToken.getToken())
+                                                                                                .recipientToken(
+                                                                                                        phoneToken.getToken())
                                                                                                 .title("New Post")
                                                                                                 .body("New post has been created")
                                                                                                 .image(photo.getUrl())
                                                                                                 .data(Map.of(
-                                                                                                        "postId", "hello",
-                                                                                                        "name", post.getName()
+                                                                                                        "postId",
+                                                                                                        "hello",
+                                                                                                        "name",
+                                                                                                        post.getName()
                                                                                                 ))
                                                                                                 .build());
                             });
@@ -163,7 +169,10 @@ public class PostServiceImpl implements IPostService {
             Pattern pattern = Pattern.compile(SORT_BY);
             Matcher matcher = pattern.matcher(sortBy);
             if (matcher.find())
-                sorts.add(new Sort.Order(Sort.Direction.fromString(matcher.group(3)), matcher.group(1)));
+                sorts.add(new Sort.Order(
+                        Sort.Direction.fromString(matcher.group(3)),
+                        matcher.group(1)
+                ));
         }
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sorts));
         Page<Post> pagePost = postRepository.findAll(pageable);
@@ -188,7 +197,10 @@ public class PostServiceImpl implements IPostService {
                 Pattern pattern = Pattern.compile(SORT_BY);
                 Matcher matcher = pattern.matcher(sortBy);
                 if (matcher.find())
-                    orders.add(new Sort.Order(Sort.Direction.fromString(matcher.group(3)), matcher.group(1)));
+                    orders.add(new Sort.Order(
+                            Sort.Direction.fromString(matcher.group(3)),
+                            matcher.group(1)
+                    ));
             }
         }
 
@@ -209,6 +221,11 @@ public class PostServiceImpl implements IPostService {
     public PageResponse<?> getAllPostWithPagingAndSorting(
             int pageNo, int pageSize, String search, String sortBy
     ) {
-        return searchPostRepository.getAllPostsWithPagingAndSorting(pageNo, pageSize, search, sortBy);
+        return searchPostRepository.getAllPostsWithPagingAndSorting(
+                pageNo,
+                pageSize,
+                search,
+                sortBy
+        );
     }
 }

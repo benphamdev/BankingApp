@@ -25,6 +25,7 @@ import org.springframework.web.context.request.WebRequest;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.banking.thejavabanking.dto.respones.shared.ApiError.createFieldApiError;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -80,10 +81,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = AppException.class)
-    ResponseEntity<BaseResponse> handleAppException(AppException e) {
+    ResponseEntity<BaseResponse<?>> handleAppException(AppException e) {
         EnumsErrorResponse errorResponse = e.getErrorResponse();
 
-        BaseResponse response = new BaseResponse(
+        BaseResponse<?> response = new BaseResponse<>(
                 errorResponse.getCode(),
                 errorResponse.getMessage()
         );
@@ -93,8 +94,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = AccessDeniedException.class)
-    ResponseEntity<BaseResponse> handleAccessDeniedException(AccessDeniedException e) {
-        BaseResponse response = new BaseResponse(
+    ResponseEntity<BaseResponse<?>> handleAccessDeniedException(AccessDeniedException e) {
+        BaseResponse<?> response = new BaseResponse<>(
                 EnumsErrorResponse.UNAUTHORIZED.getCode(),
                 EnumsErrorResponse.UNAUTHORIZED.getMessage()
         );
@@ -106,7 +107,9 @@ public class GlobalExceptionHandler {
     //  BAT EXCEPTION ENUMS PROVINCE
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleHttpMessageNotReadableException(HttpMessageNotReadableException ex, WebRequest request) {
+    public ErrorResponse handleHttpMessageNotReadableException(
+            HttpMessageNotReadableException ex, WebRequest request
+    ) {
         initErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
@@ -115,8 +118,7 @@ public class GlobalExceptionHandler {
         message = ex.getMessage();
 
         Throwable cause = ex.getCause();
-        if (cause instanceof InvalidFormatException) {
-            InvalidFormatException ife = (InvalidFormatException) cause;
+        if (cause instanceof InvalidFormatException ife) {
             if (ife.getTargetType()
                    .isEnum()) {
 //                message = "Invalid value for enum " + ife.getTargetType()
@@ -172,14 +174,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleDataIntegrityViolationException(DataIntegrityViolationException e, WebRequest request) {
+    public ErrorResponse handleDataIntegrityViolationException(
+            DataIntegrityViolationException e, WebRequest request
+    ) {
         initErrorResponse(
                 HttpStatus.CONFLICT.value(),
                 HttpStatus.CONFLICT.getReasonPhrase(),
                 request
         );
-        String errorMessage = e.getRootCause()
-                               .getMessage();
+        String errorMessage = Objects.requireNonNull(e.getRootCause())
+                                     .getMessage();
 
 //        if (errorMessage.contains("Duplicate entry")) {
         int startIndex = errorMessage.indexOf("'") + 1;
@@ -187,7 +191,10 @@ public class GlobalExceptionHandler {
         String duplicateValue = errorMessage.substring(startIndex, endIndex);
         duplicateValue = duplicateValue.contains("@")
                 ? String.format("Email : %s %s", duplicateValue, EnumsErrorResponse.EMAIL_EXISTS)
-                : String.format("Phone number : %s %s", duplicateValue, EnumsErrorResponse.PHONE_NUMBER_EXISTS
+                : String.format(
+                "Phone number : %s %s",
+                duplicateValue,
+                EnumsErrorResponse.PHONE_NUMBER_EXISTS
         );
         errorResponse.setMessage(duplicateValue);
 //        }
@@ -203,47 +210,78 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    ResponseEntity<BaseResponse> handleMethodArgumentNotValidException(
-            MethodArgumentNotValidException e
+    ResponseEntity<BaseResponse<?>> handleMethodArgumentNotValidException(
+            MethodArgumentNotValidException e,
+            WebRequest request
     ) {
-        String enumsKey = e.getFieldError()
-                           .getDefaultMessage();
+        initErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                request
+        );
+        message = e.getMessage();
 
+        errorResponse.setError("Payload validation failed");
+
+        String enumsKey = Objects.requireNonNull(e.getFieldError())
+                                 .getDefaultMessage();
+
+        assert enumsKey != null;
         if (enumsKey.contains("enum")) {
             return ResponseEntity.badRequest()
-                                 .body(new BaseResponse(BAD_REQUEST.value(), enumsKey));
+                                 .body(new BaseResponse<>(BAD_REQUEST.value(), enumsKey));
         }
 
-        EnumsErrorResponse errorCode = EnumsErrorResponse.valueOf(enumsKey);
+        var apiErrors = e.getFieldErrors()
+                         .stream()
+                         .map(v -> createFieldApiError(
+                                 v.getField(),
+                                 getMessageInvalidValue(e, v.getDefaultMessage()),
+                                 request.getDescription(false)
+                                        .replace("uri=", ""),
+                                 v.getRejectedValue()
+                         ))
+                         .toList();
+
+        return ResponseEntity.badRequest()
+                             .body(new BaseResponse<>(
+                                     errorResponse.getStatus(),
+                                     errorResponse.getError(),
+                                     apiErrors
+                             ));
+    }
+
+    private String getMessageInvalidValue(
+            MethodArgumentNotValidException e, String message
+    ) {
+//        log.info("Message : {}", message);
+//        String enumsKey = Objects.requireNonNull(e.getFieldError())
+//                                 .getDefaultMessage();
+        EnumsErrorResponse errorCode = EnumsErrorResponse.valueOf(message);
         Map<String, Object> attributes = null;
         try {
-            errorCode = EnumsErrorResponse.valueOf(enumsKey);
+            errorCode = EnumsErrorResponse.valueOf(message);
             if (errorCode == EnumsErrorResponse.INVALID_DOB
                     || errorCode == EnumsErrorResponse.PASSWORD_INVALID
                     || errorCode == EnumsErrorResponse.INVALID_PHONE_NUMBER
                     || errorCode == EnumsErrorResponse.INVALID_ACCOUNT_NUMBER
             ) {
-                var constraint = e.getBindingResult()
-                                  .getAllErrors()
-                                  .get(0)
-                                  .unwrap(ConstraintViolation.class);
+                var constraint = Objects.requireNonNull(e.getBindingResult()
+                                                         .getFieldError())
+                                        .unwrap(ConstraintViolation.class);
+
                 attributes = constraint.getConstraintDescriptor()
                                        .getAttributes();
+
                 log.info("Attributes : {}", attributes);
             }
         } catch (Exception ex) {
             log.error("Error while parsing error code", ex);
         }
 
-        BaseResponse apiResponse = new BaseResponse(
-                errorCode.getCode(),
-                Objects.nonNull(attributes)
-                        ? mapAttribute(errorCode.getMessage(), attributes)
-                        : errorCode.getMessage()
-        );
-
-        return ResponseEntity.badRequest()
-                             .body(apiResponse);
+        return Objects.nonNull(attributes)
+                ? mapAttribute(errorCode.getMessage(), attributes)
+                : errorCode.getMessage();
     }
 
     /**
@@ -284,18 +322,35 @@ public class GlobalExceptionHandler {
             }
     )
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleValidationException(Exception e, WebRequest request) {
+    public BaseResponse<?> handleValidationException(Exception e, WebRequest request) {
         initErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 request
         );
         message = e.getMessage();
-        if (e instanceof MethodArgumentNotValidException) {
-            int start = message.lastIndexOf("[");
-            int end = message.lastIndexOf("]");
-            message = message.substring(start + 1, end - 1);
+        if (e instanceof MethodArgumentNotValidException methodArgumentNotValidException) {
+//            int start = message.lastIndexOf("[");
+//            int end = message.lastIndexOf("]");
+//            message = message.substring(start + 1, end - 1);
             errorResponse.setError("Payload validation failed");
+
+            var apiErrors = methodArgumentNotValidException.getFieldErrors()
+                                                           .stream()
+                                                           .map(v -> createFieldApiError(
+                                                                   v.getField(),
+                                                                   v.getDefaultMessage(),
+                                                                   request.getDescription(false)
+                                                                          .replace("uri=", ""),
+                                                                   v.getRejectedValue()
+                                                           ))
+                                                           .toList();
+
+            return new BaseResponse<>(
+                    errorResponse.getStatus(),
+                    errorResponse.getError(),
+                    apiErrors
+            );
         } else if (e instanceof ConstraintViolationException) {
             message = message.substring(message.indexOf(" ") + 1);
             errorResponse.setError("PathVariable validation failed");
@@ -303,7 +358,11 @@ public class GlobalExceptionHandler {
             errorResponse.setError("RequestParam validation failed");
         }
         errorResponse.setMessage(message);
-        return errorResponse;
+        return new BaseResponse<>(
+                errorResponse.getStatus(),
+                errorResponse.getError(),
+                errorResponse
+        );
     }
 
     /**
@@ -338,7 +397,9 @@ public class GlobalExceptionHandler {
                     )
             }
     )
-    public ErrorResponse handleResourceNotFoundException(ResourceNotFoundException e, WebRequest request) {
+    public ErrorResponse handleResourceNotFoundException(
+            ResourceNotFoundException e, WebRequest request
+    ) {
         initErrorResponse(NOT_FOUND.value(), NOT_FOUND.getReasonPhrase(), request);
         errorResponse.setMessage(e.getMessage());
         return errorResponse;

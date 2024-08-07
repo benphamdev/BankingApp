@@ -10,13 +10,10 @@ spring:
     activate:
       on-profile: dev
   datasource:
-    #    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_POST:3306}/bankingapp
-    #    username: ${MYSQL_USER:root}
-    #    password: ${MYSQL_PASSWORD:123456789}
-    username: root
-    password: 123456789
-    url: jdbc:mysql://localhost:3307/bankingapp
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_POST:3307}/banking?createDatabaseIfNotExist=true
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:123456789}
+    driver-class-name: "com.mysql.cj.jdbc.Driver"
   jpa:
     hibernate:
       ddl-auto: update
