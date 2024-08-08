@@ -5,19 +5,31 @@ server:
     multipart:
       max-file-size: 100MB
       max-request-size: 100MB
+
 spring:
   config:
     activate:
       on-profile: dev
+
+  threads:
+    virtual:
+      enabled: true
+
   datasource:
     url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_POST:3307}/banking?createDatabaseIfNotExist=true
     username: ${MYSQL_USER:root}
     password: ${MYSQL_PASSWORD:123456789}
     driver-class-name: "com.mysql.cj.jdbc.Driver"
+
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+    default-property-inclusion: non_null
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -52,3 +64,8 @@ open:
     licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.html
     servers:
       url: http://localhost:8081/api/v1/swagger-ui.html
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE

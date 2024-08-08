@@ -64,7 +64,6 @@ public class ApplicationInitConfig {
         return FirebaseMessaging.getInstance(app);
     }
 
-    @Bean
     public void setUp() {
         Twilio.init(AccountSID, AuthToken);
     }

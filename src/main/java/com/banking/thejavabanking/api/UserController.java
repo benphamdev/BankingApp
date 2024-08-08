@@ -1,5 +1,6 @@
 package com.banking.thejavabanking.api;
 
+import com.banking.thejavabanking.application.aspect.Performance;
 import com.banking.thejavabanking.contract.abstractions.shared.response.BaseResponse;
 import com.banking.thejavabanking.domain.users.dto.requests.UserCreationRequest;
 import com.banking.thejavabanking.domain.users.dto.requests.UserUpdateRequest;
@@ -35,6 +36,7 @@ public class UserController {
 
     public UserController(UserServiceImpl userService) {this.userService = userService;}
 
+    @Performance
     @Operation(
             method = "POST",
             summary = "Create Account",

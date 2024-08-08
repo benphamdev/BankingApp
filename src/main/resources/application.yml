@@ -1,6 +1,7 @@
 spring:
   application:
     name: the-java-banking
+
   profiles:
     active: @spring.profiles.active@
 #server:
