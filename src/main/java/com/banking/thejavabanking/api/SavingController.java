@@ -1,0 +1,54 @@
+package com.banking.thejavabanking.api;
+
+import com.banking.thejavabanking.contract.abstractions.shared.response.BaseResponse;
+import com.banking.thejavabanking.domain.savings.dto.requests.SavingRequest;
+import com.banking.thejavabanking.domain.savings.entity.Saving;
+import com.banking.thejavabanking.domain.savings.services.impl.SavingServiceImpl;
+import jakarta.validation.constraints.Min;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/saving")
+public class SavingController {
+
+    private final SavingServiceImpl savingService;
+
+    @Autowired
+    public SavingController(SavingServiceImpl savingService) {this.savingService = savingService;}
+
+    @PostMapping("/create")
+    public BaseResponse<Saving> createSavingAccount(
+            @RequestBody SavingRequest savingRequest
+    ) {
+        return BaseResponse.<Saving>builder()
+                           .message("Saving account created successfully")
+                           .data(savingService.createSavingAccount(savingRequest))
+                           .build();
+    }
+
+    @GetMapping("/cancel/{savingId}")
+    public BaseResponse<Void> cancelSavingAccount(
+            @PathVariable @Min(1) Integer savingId
+    ) {
+        savingService.cancelSaving(savingId);
+        return BaseResponse.<Void>builder()
+                           .message("Saving account cancelled successfully")
+                           .build();
+    }
+
+    @GetMapping("/refund")
+    public BaseResponse<?> refundSavingAccount() {
+        return null;
+    }
+
+    @GetMapping("/{userId}")
+    public BaseResponse<Saving> getSavingByUserId(
+            @PathVariable @Min(1) Integer userId
+    ) {
+        return BaseResponse.<Saving>builder()
+                           .message("Saving account retrieved successfully")
+                           .data(savingService.getSavingByUserId(userId))
+                           .build();
+    }
+}
