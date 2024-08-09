@@ -2,9 +2,6 @@ server:
   port: 8081
   servlet:
     context-path: /api/v1
-    multipart:
-      max-file-size: 100MB
-      max-request-size: 100MB
 
 spring:
   config:
@@ -30,6 +27,11 @@ spring:
     property-naming-strategy: SNAKE_CASE
     default-property-inclusion: non_null
 
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -53,6 +55,11 @@ spring:
             client-id: Iv23liOqqtE8AHc7v9T6
             client-secret: 23b38c7602df71a0da677f702dcaf3888cb11026
 
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+
 open:
   api:
     title: The Java Banking API
@@ -65,7 +72,3 @@ open:
     servers:
       url: http://localhost:8081/api/v1/swagger-ui.html
 
-logging:
-  level:
-    org.hibernate.SQL: DEBUG
-    org.hibernate.orm.jdbc.bind: TRACE

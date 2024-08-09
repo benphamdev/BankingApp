@@ -166,6 +166,7 @@ public class UserController {
         }
     }
 
+    @Performance
     @Operation(
             summary = "Get list users per pageNo",
             description = "Send a request via this API to get user list by pageNo and pageSize"
@@ -245,6 +246,7 @@ public class UserController {
                            .build();
     }
 
+    @Performance
     @Operation(
             summary = "Advanced search query by criteria",
             description = "Send a request via this API to get user list by pageNo, pageSize and sort by multiple column"

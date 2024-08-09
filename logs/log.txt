@@ -1,0 +1,62 @@
+2024-08-09T19:58:01.195+07:00 [tomcat-handler-1] INFO  c.b.t.api.UserController - Request to create a new account , Alana, Franecki
+2024-08-09T19:58:01.195+07:00 [tomcat-handler-1] INFO  c.b.t.api.UserController - Request to create a new account , Alana, Franecki
+2024-08-09T19:58:01.323+07:00 [tomcat-handler-1] DEBUG org.hibernate.SQL - insert into tbl_user (created_at,dob,email,first_name,gender,last_name,modified_at,password,phone_number,phone_token_id,photo_id) values (?,?,?,?,?,?,?,?,?,?,?)
+2024-08-09T19:58:01.323+07:00 [tomcat-handler-1] DEBUG org.hibernate.SQL - insert into tbl_user (created_at,dob,email,first_name,gender,last_name,modified_at,password,phone_number,phone_token_id,photo_id) values (?,?,?,?,?,?,?,?,?,?,?)
+2024-08-09T19:58:01.326+07:00 [tomcat-handler-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:TIMESTAMP) <- [2024-08-09T19:58:01.318968]
+2024-08-09T19:58:01.326+07:00 [tomcat-handler-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:TIMESTAMP) <- [2024-08-09T19:58:01.318968]
+2024-08-09T19:58:01.326+07:00 [tomcat-handler-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:DATE) <- [2004-12-01]
+2024-08-09T19:58:01.326+07:00 [tomcat-handler-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:DATE) <- [2004-12-01]
+2024-08-09T19:58:01.326+07:00 [tomcat-handler-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (3:VARCHAR) <- [22162006@student.hcmute.edu.vn]
+2024-08-09T19:58:01.326+07:00 [tomcat-handler-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (3:VARCHAR) <- [22162006@student.hcmute.edu.vn]
+2024-08-09T19:58:01.327+07:00 [tomcat-handler-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (4:VARCHAR) <- [Alana]
+2024-08-09T19:58:01.327+07:00 [tomcat-handler-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (4:VARCHAR) <- [Alana]
+2024-08-09T19:58:01.327+07:00 [tomcat-handler-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (5:ENUM) <- [MALE]
+2024-08-09T19:58:01.327+07:00 [tomcat-handler-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (5:ENUM) <- [MALE]
+2024-08-09T19:58:01.327+07:00 [tomcat-handler-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (6:VARCHAR) <- [Franecki]
+2024-08-09T19:58:01.327+07:00 [tomcat-handler-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (6:VARCHAR) <- [Franecki]
+2024-08-09T19:58:01.327+07:00 [tomcat-handler-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (7:DATE) <- [2024-08-09]
+2024-08-09T19:58:01.327+07:00 [tomcat-handler-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (7:DATE) <- [2024-08-09]
+2024-08-09T19:58:01.328+07:00 [tomcat-handler-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (8:VARCHAR) <- [$2a$10$lA1InQHzuQg5nbEms2CXh.puEPpEn82qWV96KOUqax4FdYoETp2Zi]
+2024-08-09T19:58:01.328+07:00 [tomcat-handler-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (8:VARCHAR) <- [$2a$10$lA1InQHzuQg5nbEms2CXh.puEPpEn82qWV96KOUqax4FdYoETp2Zi]
+2024-08-09T19:58:01.328+07:00 [tomcat-handler-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (9:VARCHAR) <- [0833998180]
+2024-08-09T19:58:01.328+07:00 [tomcat-handler-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (9:VARCHAR) <- [0833998180]
+2024-08-09T19:58:01.328+07:00 [tomcat-handler-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (10:INTEGER) <- [null]
+2024-08-09T19:58:01.328+07:00 [tomcat-handler-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (10:INTEGER) <- [null]
+2024-08-09T19:58:01.328+07:00 [tomcat-handler-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (11:INTEGER) <- [null]
+2024-08-09T19:58:01.328+07:00 [tomcat-handler-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (11:INTEGER) <- [null]
+2024-08-09T19:58:01.356+07:00 [tomcat-handler-1] ERROR o.h.e.jdbc.spi.SqlExceptionHelper - Duplicate entry '22162006@student.hcmute.edu.vn' for key 'tbl_user.UKnpn1wf1yu1g5rjohbek375pp1'
+2024-08-09T19:58:01.356+07:00 [tomcat-handler-1] ERROR o.h.e.jdbc.spi.SqlExceptionHelper - Duplicate entry '22162006@student.hcmute.edu.vn' for key 'tbl_user.UKnpn1wf1yu1g5rjohbek375pp1'
+2024-08-09T19:59:37.222+07:00 [main] INFO  c.b.t.TheJavaBankingApplication - Starting TheJavaBankingApplication using Java 21.0.2 with PID 41588 (/media/benpham/New Volume/03_WorkSpace/03_SpringBoot/02_Project/BankingApp/target/classes started by benpham in /media/benpham/New Volume/03_WorkSpace/03_SpringBoot/02_Project/BankingApp)
+2024-08-09T19:59:37.222+07:00 [main] INFO  c.b.t.TheJavaBankingApplication - Starting TheJavaBankingApplication using Java 21.0.2 with PID 41588 (/media/benpham/New Volume/03_WorkSpace/03_SpringBoot/02_Project/BankingApp/target/classes started by benpham in /media/benpham/New Volume/03_WorkSpace/03_SpringBoot/02_Project/BankingApp)
+2024-08-09T19:59:37.224+07:00 [main] DEBUG c.b.t.TheJavaBankingApplication - Running with Spring Boot v3.2.1, Spring v6.1.2
+2024-08-09T19:59:37.224+07:00 [main] DEBUG c.b.t.TheJavaBankingApplication - Running with Spring Boot v3.2.1, Spring v6.1.2
+2024-08-09T19:59:37.225+07:00 [main] INFO  c.b.t.TheJavaBankingApplication - The following 1 profile is active: "dev"
+2024-08-09T19:59:37.225+07:00 [main] INFO  c.b.t.TheJavaBankingApplication - The following 1 profile is active: "dev"
+2024-08-09T19:59:45.636+07:00 [main] INFO  c.b.t.TheJavaBankingApplication - Started TheJavaBankingApplication in 9.031 seconds (process running for 9.808)
+2024-08-09T19:59:45.636+07:00 [main] INFO  c.b.t.TheJavaBankingApplication - Started TheJavaBankingApplication in 9.031 seconds (process running for 9.808)
+2024-08-09T19:59:45.643+07:00 [scheduling-2] INFO  c.b.t.d.u.s.impl.UserServiceImpl - Day: 9, Month: 8
+2024-08-09T19:59:45.643+07:00 [scheduling-2] INFO  c.b.t.d.u.s.impl.UserServiceImpl - Day: 9, Month: 8
+2024-08-09T19:59:45.734+07:00 [scheduling-3] DEBUG org.hibernate.SQL - select ld1_0.id,ld1_0.created_at,ld1_0.created_by,ld1_0.is_deleted,ld1_0.loan_info_id,ld1_0.loan_payment_status,ld1_0.loan_status,ld1_0.modified_at,ld1_0.reference_number,ld1_0.updated_by,ld1_0.user_id from tbl_loan_detail ld1_0
+2024-08-09T19:59:45.734+07:00 [scheduling-2] DEBUG org.hibernate.SQL - select u1_0.id,u1_0.created_at,u1_0.dob,u1_0.email,u1_0.first_name,u1_0.gender,u1_0.last_name,u1_0.modified_at,u1_0.password,u1_0.phone_number,u1_0.phone_token_id,u1_0.photo_id from tbl_user u1_0 where month(u1_0.dob)=month(current_date) and day(u1_0.dob)=day(current_date)
+2024-08-09T19:59:45.734+07:00 [main] DEBUG org.hibernate.SQL - select u1_0.id,u1_0.created_at,u1_0.dob,u1_0.email,u1_0.first_name,u1_0.gender,u1_0.last_name,u1_0.modified_at,u1_0.password,u1_0.phone_number,u1_0.phone_token_id,u1_0.photo_id from tbl_user u1_0 where u1_0.email=?
+2024-08-09T19:59:45.734+07:00 [scheduling-4] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.base_amount,s1_0.created_at,s1_0.duration,s1_0.maturation_date,s1_0.modified_at,s1_0.refund_amount,s1_0.status_refund,s1_0.user_id from tbl_saving s1_0 where not(s1_0.status_refund)
+2024-08-09T19:59:45.734+07:00 [scheduling-3] DEBUG org.hibernate.SQL - select ld1_0.id,ld1_0.created_at,ld1_0.created_by,ld1_0.is_deleted,ld1_0.loan_info_id,ld1_0.loan_payment_status,ld1_0.loan_status,ld1_0.modified_at,ld1_0.reference_number,ld1_0.updated_by,ld1_0.user_id from tbl_loan_detail ld1_0
+2024-08-09T19:59:45.734+07:00 [scheduling-2] DEBUG org.hibernate.SQL - select u1_0.id,u1_0.created_at,u1_0.dob,u1_0.email,u1_0.first_name,u1_0.gender,u1_0.last_name,u1_0.modified_at,u1_0.password,u1_0.phone_number,u1_0.phone_token_id,u1_0.photo_id from tbl_user u1_0 where month(u1_0.dob)=month(current_date) and day(u1_0.dob)=day(current_date)
+2024-08-09T19:59:45.734+07:00 [main] DEBUG org.hibernate.SQL - select u1_0.id,u1_0.created_at,u1_0.dob,u1_0.email,u1_0.first_name,u1_0.gender,u1_0.last_name,u1_0.modified_at,u1_0.password,u1_0.phone_number,u1_0.phone_token_id,u1_0.photo_id from tbl_user u1_0 where u1_0.email=?
+2024-08-09T19:59:45.734+07:00 [scheduling-4] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.base_amount,s1_0.created_at,s1_0.duration,s1_0.maturation_date,s1_0.modified_at,s1_0.refund_amount,s1_0.status_refund,s1_0.user_id from tbl_saving s1_0 where not(s1_0.status_refund)
+2024-08-09T19:59:45.738+07:00 [main] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [admin]
+2024-08-09T19:59:45.738+07:00 [main] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [admin]
+2024-08-09T19:59:45.741+07:00 [scheduling-2] INFO  c.b.t.d.n.s.i.FirebaseMessagingServiceImpl - Users with birthday today : 0
+2024-08-09T19:59:45.741+07:00 [scheduling-2] INFO  c.b.t.d.n.s.i.FirebaseMessagingServiceImpl - Users with birthday today : 0
+2024-08-09T19:59:45.757+07:00 [main] DEBUG org.hibernate.SQL - select a1_0.id,a1_0.account_number,a1_0.account_type,a1_0.balance,bi1_0.id,bi1_0.address,bi1_0.branch_name,bi1_0.created_at,bi1_0.modified_at,p1_0.id,p1_0.name,a1_0.created_at,a1_0.modified_at,a1_0.user_id from tbl_account a1_0 left join tbl_branch_info bi1_0 on bi1_0.id=a1_0.branch_info_id left join tbl_province p1_0 on p1_0.id=bi1_0.province_id where a1_0.user_id=?
+2024-08-09T19:59:45.757+07:00 [main] DEBUG org.hibernate.SQL - select a1_0.id,a1_0.account_number,a1_0.account_type,a1_0.balance,bi1_0.id,bi1_0.address,bi1_0.branch_name,bi1_0.created_at,bi1_0.modified_at,p1_0.id,p1_0.name,a1_0.created_at,a1_0.modified_at,a1_0.user_id from tbl_account a1_0 left join tbl_branch_info bi1_0 on bi1_0.id=a1_0.branch_info_id left join tbl_province p1_0 on p1_0.id=bi1_0.province_id where a1_0.user_id=?
+2024-08-09T19:59:45.758+07:00 [main] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [1]
+2024-08-09T19:59:45.758+07:00 [main] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [1]
+2024-08-09T19:59:45.763+07:00 [main] DEBUG org.hibernate.SQL - select fp1_0.id,fp1_0.created_at,fp1_0.expiration_time,fp1_0.modified_at,fp1_0.otp,fp1_0.user_id from tbl_forgot_password fp1_0 where fp1_0.user_id=?
+2024-08-09T19:59:45.763+07:00 [main] DEBUG org.hibernate.SQL - select fp1_0.id,fp1_0.created_at,fp1_0.expiration_time,fp1_0.modified_at,fp1_0.otp,fp1_0.user_id from tbl_forgot_password fp1_0 where fp1_0.user_id=?
+2024-08-09T19:59:45.764+07:00 [main] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [1]
+2024-08-09T19:59:45.764+07:00 [main] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [1]
+2024-08-09T19:59:45.778+07:00 [main] DEBUG org.hibernate.SQL - select r1_0.user_id,r1_1.name,r1_1.description from tbl_user_roles r1_0 join tbl_role r1_1 on r1_1.name=r1_0.roles_name where r1_0.user_id=?
+2024-08-09T19:59:45.778+07:00 [main] DEBUG org.hibernate.SQL - select r1_0.user_id,r1_1.name,r1_1.description from tbl_user_roles r1_0 join tbl_role r1_1 on r1_1.name=r1_0.roles_name where r1_0.user_id=?
+2024-08-09T19:59:45.779+07:00 [main] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [1]
+2024-08-09T19:59:45.779+07:00 [main] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [1]
